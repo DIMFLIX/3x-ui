@@ -5,6 +5,7 @@ import type {
 } from '@/schemas/forms/inbound-form';
 import type { InboundSettings } from '@/schemas/protocols/inbound';
 import {
+  AmneziawgClientSchema,
   HysteriaClientSchema,
   MtprotoClientSchema,
   ShadowsocksClientSchema,
@@ -18,6 +19,7 @@ import type { Sniffing } from '@/schemas/primitives';
 import type { z } from 'zod';
 import { normalizeStreamSettingsForWire } from '@/lib/xray/stream-wire-normalize';
 import { canEnableSniffing } from '@/lib/xray/protocol-capabilities';
+import { tlsCertUsesFiles } from '@/schemas/protocols/security/tls';
 import { SockoptStreamSettingsSchema } from '@/schemas/protocols/stream/sockopt';
 import { XHttpStreamSettingsSchema, XHttpXmuxSchema } from '@/schemas/protocols/stream/xhttp';
 
@@ -151,14 +153,7 @@ function tlsCerts(stream: Record<string, unknown>): Record<string, unknown>[] {
 }
 
 function synthesizeTlsCertUseFile(stream: Record<string, unknown>): void {
-  for (const c of tlsCerts(stream)) {
-    if (typeof c.useFile === 'boolean') continue;
-    const hasFile = !!c.certificateFile || !!c.keyFile;
-    const hasInline =
-      (Array.isArray(c.certificate) && c.certificate.length > 0) ||
-      (Array.isArray(c.key) && c.key.length > 0);
-    c.useFile = hasFile || !hasInline;
-  }
+  for (const c of tlsCerts(stream)) c.useFile = tlsCertUsesFiles(c);
 }
 
 function stripTlsCertUseFile(stream: Record<string, unknown>): void {
@@ -268,6 +263,8 @@ function clientSchemaForProtocol(protocol: string): z.ZodType | null {
       return WireguardClientSchema;
     case 'mtproto':
       return MtprotoClientSchema;
+    case 'amneziawg':
+      return AmneziawgClientSchema;
     default:
       return null;
   }

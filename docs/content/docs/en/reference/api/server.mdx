@@ -92,13 +92,11 @@ _openapi:
       title: Generate a new X25519 keypair for Reality.
       url: '#generate-a-new-x25519-keypair-for-reality'
     - depth: 2
-      title: Generate a new ML-DSA-65 keypair (post-quantum signature). Returns
-        {privateKey, publicKey, seed}.
-      url: '#generate-a-new-ml-dsa-65-keypair-post-quantum-signature-returns-privatekey-publickey-seed'
+      title: Generate a new ML-DSA-65 keypair. Returns {seed, verify}.
+      url: '#generate-a-new-ml-dsa-65-keypair-returns-seed-verify'
     - depth: 2
-      title: Generate a new ML-KEM-768 keypair (post-quantum KEM). Returns {clientKey,
-        serverKey}.
-      url: '#generate-a-new-ml-kem-768-keypair-post-quantum-kem-returns-clientkey-serverkey'
+      title: Generate a new ML-KEM-768 keypair. Returns {seed, client}.
+      url: '#generate-a-new-ml-kem-768-keypair-returns-seed-client'
     - depth: 2
       title: Generate VLESS encryption auth options. Returns an auths array each with
         id, label, encryption, and decryption fields.
@@ -123,9 +121,9 @@ _openapi:
         dev release. Only effective on dev builds.
       url: '#toggle-the-panel-update-channel-between-stable-and-the-rolling-per-commit-dev-release-only-effective-on-dev-builds'
     - depth: 2
-      title: Refresh the default GeoIP / GeoSite data files. Body can include a
-        fileName, or use the /:fileName variant.
-      url: '#refresh-the-default-geoip--geosite-data-files-body-can-include-a-filename-or-use-the-filename-variant'
+      title: Refresh the default GeoIP / GeoSite data files. Use the /:fileName
+        variant to update one file.
+      url: '#refresh-the-default-geoip--geosite-data-files-use-the-filename-variant-to-update-one-file'
     - depth: 2
       title: Refresh a single Geo file by filename (e.g. geoip.dat, geosite.dat).
       url: '#refresh-a-single-geo-file-by-filename-eg-geoipdat-geositedat'
@@ -135,6 +133,10 @@ _openapi:
     - depth: 2
       title: Return the last N lines of the Xray process log.
       url: '#return-the-last-n-lines-of-the-xray-process-log'
+    - depth: 2
+      title: Return live AmneziaWG peer activity (handshake, endpoint, transfer) plus
+        the panel’s own AmneziaWG event lines.
+      url: '#return-live-amneziawg-peer-activity-handshake-endpoint-transfer-plus-the-panels-own-amneziawg-event-lines'
     - depth: 2
       title: Restore the panel DB from an uploaded backup (multipart form, field name
         "db"). SQLite panels accept a SQLite database (.db) or a SQLite
@@ -244,12 +246,10 @@ _openapi:
         id: read-only-summaries-guid-parentguid-name-address-status-versions-of-the-nodes-this-panel-manages-a-parent-panel-calls-it-on-a-node-via-the-node-api-token-to-surface-transitive-sub-nodes-in-a-chained-topology-counts-are-computed-by-the-parent-not-returned-here
       - content: Generate a new X25519 keypair for Reality.
         id: generate-a-new-x25519-keypair-for-reality
-      - content: Generate a new ML-DSA-65 keypair (post-quantum signature). Returns
-          {privateKey, publicKey, seed}.
-        id: generate-a-new-ml-dsa-65-keypair-post-quantum-signature-returns-privatekey-publickey-seed
-      - content: Generate a new ML-KEM-768 keypair (post-quantum KEM). Returns
-          {clientKey, serverKey}.
-        id: generate-a-new-ml-kem-768-keypair-post-quantum-kem-returns-clientkey-serverkey
+      - content: Generate a new ML-DSA-65 keypair. Returns {seed, verify}.
+        id: generate-a-new-ml-dsa-65-keypair-returns-seed-verify
+      - content: Generate a new ML-KEM-768 keypair. Returns {seed, client}.
+        id: generate-a-new-ml-kem-768-keypair-returns-seed-client
       - content: Generate VLESS encryption auth options. Returns an auths array each
           with id, label, encryption, and decryption fields.
         id: generate-vless-encryption-auth-options-returns-an-auths-array-each-with-id-label-encryption-and-decryption-fields
@@ -267,15 +267,18 @@ _openapi:
       - content: Toggle the panel update channel between stable and the rolling
           per-commit dev release. Only effective on dev builds.
         id: toggle-the-panel-update-channel-between-stable-and-the-rolling-per-commit-dev-release-only-effective-on-dev-builds
-      - content: Refresh the default GeoIP / GeoSite data files. Body can include a
-          fileName, or use the /:fileName variant.
-        id: refresh-the-default-geoip--geosite-data-files-body-can-include-a-filename-or-use-the-filename-variant
+      - content: Refresh the default GeoIP / GeoSite data files. Use the /:fileName
+          variant to update one file.
+        id: refresh-the-default-geoip--geosite-data-files-use-the-filename-variant-to-update-one-file
       - content: Refresh a single Geo file by filename (e.g. geoip.dat, geosite.dat).
         id: refresh-a-single-geo-file-by-filename-eg-geoipdat-geositedat
       - content: Return the last N lines of the panel’s own log.
         id: return-the-last-n-lines-of-the-panels-own-log
       - content: Return the last N lines of the Xray process log.
         id: return-the-last-n-lines-of-the-xray-process-log
+      - content: Return live AmneziaWG peer activity (handshake, endpoint, transfer)
+          plus the panel’s own AmneziaWG event lines.
+        id: return-live-amneziawg-peer-activity-handshake-endpoint-transfer-plus-the-panels-own-amneziawg-event-lines
       - content: Restore the panel DB from an uploaded backup (multipart form, field
           name "db"). SQLite panels accept a SQLite database (.db) or a SQLite
           migration dump (.dump); PostgreSQL panels accept a pg_dump archive
@@ -322,7 +325,7 @@ export default function Layout(props) {
   return (
     <>
       {props.children}
-      <Comp document="./public/openapi.json" webhooks={[]} operations={[{"path":"/panel/api/openapi.json","method":"get"},{"path":"/panel/api/server/status","method":"get"},{"path":"/panel/api/server/fail2banStatus","method":"get"},{"path":"/panel/api/server/cpuHistory/{bucket}","method":"get"},{"path":"/panel/api/server/history/{metric}/{bucket}","method":"get"},{"path":"/panel/api/server/xrayMetricsState","method":"get"},{"path":"/panel/api/server/xrayMetricsHistory/{metric}/{bucket}","method":"get"},{"path":"/panel/api/server/xrayObservatory","method":"get"},{"path":"/panel/api/server/xrayObservatoryHistory/{tag}/{bucket}","method":"get"},{"path":"/panel/api/server/getXrayVersion","method":"get"},{"path":"/panel/api/server/getPanelUpdateInfo","method":"get"},{"path":"/panel/api/server/getUpdateStatus","method":"get"},{"path":"/panel/api/server/getConfigJson","method":"get"},{"path":"/panel/api/server/getDb","method":"get"},{"path":"/panel/api/server/getMigration","method":"get"},{"path":"/panel/api/server/getNewUUID","method":"get"},{"path":"/panel/api/server/getWebCertFiles","method":"get"},{"path":"/panel/api/server/descendants","method":"get"},{"path":"/panel/api/server/getNewX25519Cert","method":"get"},{"path":"/panel/api/server/getNewmldsa65","method":"get"},{"path":"/panel/api/server/getNewmlkem768","method":"get"},{"path":"/panel/api/server/getNewVlessEnc","method":"get"},{"path":"/panel/api/server/stopXrayService","method":"post"},{"path":"/panel/api/server/restartXrayService","method":"post"},{"path":"/panel/api/server/installXray/{version}","method":"post"},{"path":"/panel/api/server/updatePanel","method":"post"},{"path":"/panel/api/server/setUpdateChannel","method":"post"},{"path":"/panel/api/server/updateGeofile","method":"post"},{"path":"/panel/api/server/updateGeofile/{fileName}","method":"post"},{"path":"/panel/api/server/logs/{count}","method":"post"},{"path":"/panel/api/server/xraylogs/{count}","method":"post"},{"path":"/panel/api/server/importDB","method":"post"},{"path":"/panel/api/server/getNewEchCert","method":"post"},{"path":"/panel/api/server/getCertHash","method":"post"},{"path":"/panel/api/server/getRemoteCertHash","method":"post"},{"path":"/panel/api/server/scanRealityTarget","method":"post"},{"path":"/panel/api/server/scanRealityTargets","method":"post"},{"path":"/panel/api/server/clientIps","method":"get"},{"path":"/panel/api/server/clientIps","method":"post"}]} showTitle />
+      <Comp document="./public/openapi.json" webhooks={[]} operations={[{"path":"/panel/api/openapi.json","method":"get"},{"path":"/panel/api/server/status","method":"get"},{"path":"/panel/api/server/fail2banStatus","method":"get"},{"path":"/panel/api/server/cpuHistory/{bucket}","method":"get"},{"path":"/panel/api/server/history/{metric}/{bucket}","method":"get"},{"path":"/panel/api/server/xrayMetricsState","method":"get"},{"path":"/panel/api/server/xrayMetricsHistory/{metric}/{bucket}","method":"get"},{"path":"/panel/api/server/xrayObservatory","method":"get"},{"path":"/panel/api/server/xrayObservatoryHistory/{tag}/{bucket}","method":"get"},{"path":"/panel/api/server/getXrayVersion","method":"get"},{"path":"/panel/api/server/getPanelUpdateInfo","method":"get"},{"path":"/panel/api/server/getUpdateStatus","method":"get"},{"path":"/panel/api/server/getConfigJson","method":"get"},{"path":"/panel/api/server/getDb","method":"get"},{"path":"/panel/api/server/getMigration","method":"get"},{"path":"/panel/api/server/getNewUUID","method":"get"},{"path":"/panel/api/server/getWebCertFiles","method":"get"},{"path":"/panel/api/server/descendants","method":"get"},{"path":"/panel/api/server/getNewX25519Cert","method":"get"},{"path":"/panel/api/server/getNewmldsa65","method":"get"},{"path":"/panel/api/server/getNewmlkem768","method":"get"},{"path":"/panel/api/server/getNewVlessEnc","method":"get"},{"path":"/panel/api/server/stopXrayService","method":"post"},{"path":"/panel/api/server/restartXrayService","method":"post"},{"path":"/panel/api/server/installXray/{version}","method":"post"},{"path":"/panel/api/server/updatePanel","method":"post"},{"path":"/panel/api/server/setUpdateChannel","method":"post"},{"path":"/panel/api/server/updateGeofile","method":"post"},{"path":"/panel/api/server/updateGeofile/{fileName}","method":"post"},{"path":"/panel/api/server/logs/{count}","method":"post"},{"path":"/panel/api/server/xraylogs/{count}","method":"post"},{"path":"/panel/api/server/amneziawglogs/{count}","method":"post"},{"path":"/panel/api/server/importDB","method":"post"},{"path":"/panel/api/server/getNewEchCert","method":"post"},{"path":"/panel/api/server/getCertHash","method":"post"},{"path":"/panel/api/server/getRemoteCertHash","method":"post"},{"path":"/panel/api/server/scanRealityTarget","method":"post"},{"path":"/panel/api/server/scanRealityTargets","method":"post"},{"path":"/panel/api/server/clientIps","method":"get"},{"path":"/panel/api/server/clientIps","method":"post"}]} showTitle />
     </>
   );
 }

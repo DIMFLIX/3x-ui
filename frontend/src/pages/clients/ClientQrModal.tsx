@@ -6,11 +6,17 @@ import { isPostQuantumLink } from '@/lib/xray/inbound-link';
 import { LinkTags, linkMetaText, parseLinkParts } from '@/lib/xray/link-label';
 import { QrPanel } from '@/pages/inbounds/qr';
 import type { ClientRecord, InboundOption } from '@/hooks/useClients';
+import { formatTunnelConfigMeta } from '@/lib/inbounds/label';
 import {
   buildWireguardClientConfig,
-  findWireguardInbound,
+  findWireguardInbounds,
   isWireguardClient,
 } from './wireguardConfig';
+import {
+  buildAmneziaWGClientConfig,
+  findAmneziaWGInbounds,
+  isAmneziaWGClient,
+} from './amneziawgConfig';
 
 interface SubSettings {
   enable: boolean;
@@ -24,6 +30,7 @@ interface ClientQrModalProps {
   open: boolean;
   client: ClientRecord | null;
   inboundsById: Record<number, InboundOption>;
+  tunnelAllowedIPs?: Record<number, string>;
   subSettings?: SubSettings;
   onOpenChange: (open: boolean) => void;
 }
@@ -45,6 +52,7 @@ export default function ClientQrModal({
   open,
   client,
   inboundsById,
+  tunnelAllowedIPs,
   subSettings = DEFAULT_SUB,
   onOpenChange,
 }: ClientQrModalProps) {
@@ -60,21 +68,50 @@ export default function ClientQrModal({
       ? subSettings.subJsonURI + subId
       : '';
 
-  const wgInbound = useMemo(
-    () => findWireguardInbound(client, inboundsById),
+  const wgInbounds = useMemo(
+    () => findWireguardInbounds(client, inboundsById),
     [client, inboundsById],
   );
-  const wgConfigText = useMemo(() => {
-    if (!client || !wgInbound || !isWireguardClient(client)) return '';
-    return buildWireguardClientConfig(
-      client,
-      wgInbound,
-      window.location.hostname,
-      subSettings?.publicHost ?? '',
-    );
-  }, [client, wgInbound, subSettings?.publicHost]);
+  const wgConfigs = useMemo(() => {
+    if (!client || !isWireguardClient(client)) return [];
+    return wgInbounds
+      .map((ib) => {
+        const address = tunnelAllowedIPs?.[ib.id] ?? '';
+        const text = buildWireguardClientConfig(
+          client,
+          ib,
+          window.location.hostname,
+          subSettings?.publicHost ?? '',
+          address,
+        );
+        return { inbound: ib, text };
+      })
+      .filter((c) => !!c.text);
+  }, [client, wgInbounds, tunnelAllowedIPs, subSettings?.publicHost]);
 
-  const hasAnything = !!subLink || !!subJsonLink || !!wgConfigText || links.length > 0;
+  const awgInbounds = useMemo(
+    () => findAmneziaWGInbounds(client, inboundsById),
+    [client, inboundsById],
+  );
+  const awgConfigs = useMemo(() => {
+    if (!client || !isAmneziaWGClient(client)) return [];
+    return awgInbounds
+      .map((ib) => {
+        const address = tunnelAllowedIPs?.[ib.id] ?? '';
+        const text = buildAmneziaWGClientConfig(
+          client,
+          ib,
+          window.location.hostname,
+          subSettings?.publicHost ?? '',
+          address,
+        );
+        return { inbound: ib, text };
+      })
+      .filter((c) => !!c.text);
+  }, [client, awgInbounds, tunnelAllowedIPs, subSettings?.publicHost]);
+
+  const hasAnything =
+    !!subLink || !!subJsonLink || wgConfigs.length > 0 || awgConfigs.length > 0 || links.length > 0;
 
   // The reset runs during render so the effect only carries the request.
   const openSubId = open ? (client?.subId ?? '') : '';
@@ -148,25 +185,40 @@ export default function ClientQrModal({
         ),
       });
     });
-    if (wgConfigText) {
-      out.push({
-        key: 'wg-config',
-        label: (
+    wgConfigs.forEach(({ inbound, text }) => {
+      const meta = formatTunnelConfigMeta(inbound, client?.email, wgConfigs.length);
+      const label = (
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
           <Tag color="cyan" style={{ margin: 0 }}>
             {t('pages.clients.wireguardConfig')}
           </Tag>
-        ),
-        children: (
-          <QrPanel
-            value={wgConfigText}
-            remark={client?.email || 'peer'}
-            downloadName={`${client?.email || 'peer'}.conf`}
-          />
-        ),
+          {meta.label && <span style={{ opacity: 0.85, fontSize: 12 }}>{meta.label}</span>}
+        </span>
+      );
+      out.push({
+        key: `wg-config-${inbound.id}`,
+        label,
+        children: <QrPanel value={text} remark={meta.qrRemark} downloadName={meta.fileName} />,
       });
-    }
+    });
+    awgConfigs.forEach(({ inbound, text }) => {
+      const meta = formatTunnelConfigMeta(inbound, client?.email, awgConfigs.length);
+      const label = (
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+          <Tag color="purple" style={{ margin: 0 }}>
+            {t('pages.clients.amneziaWgConfig')}
+          </Tag>
+          {meta.label && <span style={{ opacity: 0.85, fontSize: 12 }}>{meta.label}</span>}
+        </span>
+      );
+      out.push({
+        key: `awg-config-${inbound.id}`,
+        label,
+        children: <QrPanel value={text} remark={meta.qrRemark} downloadName={meta.fileName} />,
+      });
+    });
     return out;
-  }, [subLink, subJsonLink, wgConfigText, links, client?.email, t]);
+  }, [subLink, subJsonLink, wgConfigs, awgConfigs, links, client?.email, t]);
 
   // Expanding the first panel is a render-time adjustment, not a side effect.
   const firstKey = open && items.length > 0 ? items[0].key : null;

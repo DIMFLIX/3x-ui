@@ -191,6 +191,79 @@ export const SCHEMAS: Record<string, unknown> = {
       "subEncrypt": {
         "type": "boolean"
       },
+      "subExpiredTemplate": {
+        "type": "string"
+      },
+      "subHappAlwaysHwid": {
+        "type": "boolean"
+      },
+      "subHappAutoConnect": {
+        "type": "boolean"
+      },
+      "subHappAutoConnectType": {
+        "type": "string"
+      },
+      "subHappAutoDetect": {
+        "description": "Happ client customization settings (app-management / routing / UX).",
+        "type": "boolean"
+      },
+      "subHappColorProfile": {
+        "type": "string"
+      },
+      "subHappExcludeApns": {
+        "type": "boolean"
+      },
+      "subHappExcludeRoutes": {
+        "type": "string"
+      },
+      "subHappFallbackUrl": {
+        "type": "string"
+      },
+      "subHappNewUrl": {
+        "type": "string"
+      },
+      "subHappNoLimit": {
+        "type": "boolean"
+      },
+      "subHappNotificationExpire": {
+        "type": "boolean"
+      },
+      "subHappPerAppList": {
+        "type": "string"
+      },
+      "subHappPerAppMode": {
+        "type": "string"
+      },
+      "subHappPingType": {
+        "type": "string"
+      },
+      "subHappProviderId": {
+        "type": "string"
+      },
+      "subHappSubExpire": {
+        "type": "boolean"
+      },
+      "subHappSubExpireButtonLink": {
+        "type": "string"
+      },
+      "subHappSubInfoButtonLink": {
+        "type": "string"
+      },
+      "subHappSubInfoButtonText": {
+        "type": "string"
+      },
+      "subHappSubInfoColor": {
+        "type": "string"
+      },
+      "subHappSubInfoText": {
+        "type": "string"
+      },
+      "subHappTunMode": {
+        "type": "string"
+      },
+      "subHappTunType": {
+        "type": "string"
+      },
       "subHideSettings": {
         "type": "boolean"
       },
@@ -199,6 +272,9 @@ export const SCHEMAS: Record<string, unknown> = {
       },
       "subIncyRoutingRules": {
         "type": "string"
+      },
+      "subInfoNodeEnable": {
+        "type": "boolean"
       },
       "subJsonAlwaysArray": {
         "type": "boolean"
@@ -219,6 +295,9 @@ export const SCHEMAS: Record<string, unknown> = {
         "type": "string"
       },
       "subJsonPath": {
+        "type": "string"
+      },
+      "subJsonRoutingRules": {
         "type": "string"
       },
       "subJsonRules": {
@@ -260,6 +339,9 @@ export const SCHEMAS: Record<string, unknown> = {
         "type": "string"
       },
       "subTitle": {
+        "type": "string"
+      },
+      "subTrafficDepletedTemplate": {
         "type": "string"
       },
       "subURI": {
@@ -407,9 +489,34 @@ export const SCHEMAS: Record<string, unknown> = {
       "subEnable",
       "subEnableRouting",
       "subEncrypt",
+      "subExpiredTemplate",
+      "subHappAlwaysHwid",
+      "subHappAutoConnect",
+      "subHappAutoConnectType",
+      "subHappAutoDetect",
+      "subHappColorProfile",
+      "subHappExcludeApns",
+      "subHappExcludeRoutes",
+      "subHappFallbackUrl",
+      "subHappNewUrl",
+      "subHappNoLimit",
+      "subHappNotificationExpire",
+      "subHappPerAppList",
+      "subHappPerAppMode",
+      "subHappPingType",
+      "subHappProviderId",
+      "subHappSubExpire",
+      "subHappSubExpireButtonLink",
+      "subHappSubInfoButtonLink",
+      "subHappSubInfoButtonText",
+      "subHappSubInfoColor",
+      "subHappSubInfoText",
+      "subHappTunMode",
+      "subHappTunType",
       "subHideSettings",
       "subIncyEnableRouting",
       "subIncyRoutingRules",
+      "subInfoNodeEnable",
       "subJsonAlwaysArray",
       "subJsonAutoDetect",
       "subJsonEnable",
@@ -417,6 +524,7 @@ export const SCHEMAS: Record<string, unknown> = {
       "subJsonMux",
       "subJsonObservatory",
       "subJsonPath",
+      "subJsonRoutingRules",
       "subJsonRules",
       "subJsonURI",
       "subJsonUserAgentRegex",
@@ -430,6 +538,7 @@ export const SCHEMAS: Record<string, unknown> = {
       "subSupportUrl",
       "subThemeDir",
       "subTitle",
+      "subTrafficDepletedTemplate",
       "subURI",
       "subUpdates",
       "tgBotAPIServer",
@@ -670,6 +779,79 @@ export const SCHEMAS: Record<string, unknown> = {
       "subEncrypt": {
         "type": "boolean"
       },
+      "subExpiredTemplate": {
+        "type": "string"
+      },
+      "subHappAlwaysHwid": {
+        "type": "boolean"
+      },
+      "subHappAutoConnect": {
+        "type": "boolean"
+      },
+      "subHappAutoConnectType": {
+        "type": "string"
+      },
+      "subHappAutoDetect": {
+        "description": "Happ client customization settings (app-management / routing / UX).",
+        "type": "boolean"
+      },
+      "subHappColorProfile": {
+        "type": "string"
+      },
+      "subHappExcludeApns": {
+        "type": "boolean"
+      },
+      "subHappExcludeRoutes": {
+        "type": "string"
+      },
+      "subHappFallbackUrl": {
+        "type": "string"
+      },
+      "subHappNewUrl": {
+        "type": "string"
+      },
+      "subHappNoLimit": {
+        "type": "boolean"
+      },
+      "subHappNotificationExpire": {
+        "type": "boolean"
+      },
+      "subHappPerAppList": {
+        "type": "string"
+      },
+      "subHappPerAppMode": {
+        "type": "string"
+      },
+      "subHappPingType": {
+        "type": "string"
+      },
+      "subHappProviderId": {
+        "type": "string"
+      },
+      "subHappSubExpire": {
+        "type": "boolean"
+      },
+      "subHappSubExpireButtonLink": {
+        "type": "string"
+      },
+      "subHappSubInfoButtonLink": {
+        "type": "string"
+      },
+      "subHappSubInfoButtonText": {
+        "type": "string"
+      },
+      "subHappSubInfoColor": {
+        "type": "string"
+      },
+      "subHappSubInfoText": {
+        "type": "string"
+      },
+      "subHappTunMode": {
+        "type": "string"
+      },
+      "subHappTunType": {
+        "type": "string"
+      },
       "subHideSettings": {
         "type": "boolean"
       },
@@ -678,6 +860,9 @@ export const SCHEMAS: Record<string, unknown> = {
       },
       "subIncyRoutingRules": {
         "type": "string"
+      },
+      "subInfoNodeEnable": {
+        "type": "boolean"
       },
       "subJsonAlwaysArray": {
         "type": "boolean"
@@ -698,6 +883,9 @@ export const SCHEMAS: Record<string, unknown> = {
         "type": "string"
       },
       "subJsonPath": {
+        "type": "string"
+      },
+      "subJsonRoutingRules": {
         "type": "string"
       },
       "subJsonRules": {
@@ -739,6 +927,9 @@ export const SCHEMAS: Record<string, unknown> = {
         "type": "string"
       },
       "subTitle": {
+        "type": "string"
+      },
+      "subTrafficDepletedTemplate": {
         "type": "string"
       },
       "subURI": {
@@ -893,9 +1084,34 @@ export const SCHEMAS: Record<string, unknown> = {
       "subEnable",
       "subEnableRouting",
       "subEncrypt",
+      "subExpiredTemplate",
+      "subHappAlwaysHwid",
+      "subHappAutoConnect",
+      "subHappAutoConnectType",
+      "subHappAutoDetect",
+      "subHappColorProfile",
+      "subHappExcludeApns",
+      "subHappExcludeRoutes",
+      "subHappFallbackUrl",
+      "subHappNewUrl",
+      "subHappNoLimit",
+      "subHappNotificationExpire",
+      "subHappPerAppList",
+      "subHappPerAppMode",
+      "subHappPingType",
+      "subHappProviderId",
+      "subHappSubExpire",
+      "subHappSubExpireButtonLink",
+      "subHappSubInfoButtonLink",
+      "subHappSubInfoButtonText",
+      "subHappSubInfoColor",
+      "subHappSubInfoText",
+      "subHappTunMode",
+      "subHappTunType",
       "subHideSettings",
       "subIncyEnableRouting",
       "subIncyRoutingRules",
+      "subInfoNodeEnable",
       "subJsonAlwaysArray",
       "subJsonAutoDetect",
       "subJsonEnable",
@@ -903,6 +1119,7 @@ export const SCHEMAS: Record<string, unknown> = {
       "subJsonMux",
       "subJsonObservatory",
       "subJsonPath",
+      "subJsonRoutingRules",
       "subJsonRules",
       "subJsonURI",
       "subJsonUserAgentRegex",
@@ -916,6 +1133,7 @@ export const SCHEMAS: Record<string, unknown> = {
       "subSupportUrl",
       "subThemeDir",
       "subTitle",
+      "subTrafficDepletedTemplate",
       "subURI",
       "subUpdates",
       "tgBotAPIServer",
@@ -941,6 +1159,36 @@ export const SCHEMAS: Record<string, unknown> = {
       "webKeyFile",
       "webListen",
       "webPort"
+    ],
+    "type": "object"
+  },
+  "AmneziaWGLogs": {
+    "description": "AmneziaWGLogs is what the overview's AmneziaWG log view renders: the live\nper-peer activity of every running embedded interface, plus the panel's\nown recent AmneziaWG lifecycle log lines that explain a peer being absent\nfrom Peers at all.",
+    "properties": {
+      "events": {
+        "example": [
+          "2025/01/01 12:00:00 amneziawg: started interface awg1 for inbound 1"
+        ],
+        "items": {
+          "type": "string"
+        },
+        "type": "array"
+      },
+      "peers": {
+        "items": {
+          "$ref": "#/components/schemas/PeerActivity"
+        },
+        "type": "array"
+      },
+      "running": {
+        "example": true,
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "events",
+      "peers",
+      "running"
     ],
     "type": "object"
   },
@@ -1038,6 +1286,16 @@ export const SCHEMAS: Record<string, unknown> = {
         },
         "type": "array"
       },
+      "allowedIPsByInbound": {
+        "additionalProperties": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "description": "AllowedIPsByInbound optionally overrides AllowedIPs on a per-inbound\nbasis, keyed by inbound id. Lets one identity attached to both\nWireGuard and AmneziaWG carry two genuinely different addresses in a\nsingle Create/Update call instead of the shared AllowedIPs field\nbeing broadcast to every attached tunnel inbound. Absent/unset for a\ngiven inbound id falls back to the shared AllowedIPs exactly as\nbefore -- fully backward compatible for callers that never set this.",
+        "type": "object"
+      },
       "auth": {
         "description": "Auth password (Hysteria)",
         "type": "string"
@@ -1068,6 +1326,10 @@ export const SCHEMAS: Record<string, unknown> = {
         "description": "Flow control (XTLS)",
         "type": "string"
       },
+      "forwardedPorts": {
+        "description": "AmneziaWG per-client port-forwarding spec, e.g. \"80,443,8000-8100\"",
+        "type": "string"
+      },
       "group": {
         "description": "Logical grouping label",
         "type": "string"
@@ -1077,6 +1339,8 @@ export const SCHEMAS: Record<string, unknown> = {
         "type": "string"
       },
       "keepAlive": {
+        "description": "Seconds between PersistentKeepalive packets; 0 sends none, omit to keep the stored value",
+        "nullable": true,
         "type": "integer"
       },
       "limitIp": {
@@ -1201,6 +1465,56 @@ export const SCHEMAS: Record<string, unknown> = {
     ],
     "type": "object"
   },
+  "ClientPageResponse": {
+    "description": "ClientPageResponse is the shape returned by ListPaged. `Total` is the\nrow count in the DB; `Filtered` is the count after Search/Filter/Protocol\nwere applied, before pagination. The page contains at most PageSize items.\nSummary is computed across the full DB row set so dashboard counters\non the clients page stay stable as the user paginates/filters.",
+    "properties": {
+      "filtered": {
+        "example": 47,
+        "type": "integer"
+      },
+      "groups": {
+        "example": [
+          "staff",
+          "trial"
+        ],
+        "items": {
+          "type": "string"
+        },
+        "type": "array"
+      },
+      "items": {
+        "items": {
+          "$ref": "#/components/schemas/ClientSlim"
+        },
+        "type": "array"
+      },
+      "page": {
+        "example": 1,
+        "type": "integer"
+      },
+      "pageSize": {
+        "example": 25,
+        "type": "integer"
+      },
+      "summary": {
+        "$ref": "#/components/schemas/ClientsSummary"
+      },
+      "total": {
+        "example": 2000,
+        "type": "integer"
+      }
+    },
+    "required": [
+      "filtered",
+      "groups",
+      "items",
+      "page",
+      "pageSize",
+      "summary",
+      "total"
+    ],
+    "type": "object"
+  },
   "ClientRecord": {
     "properties": {
       "adTag": {
@@ -1230,6 +1544,9 @@ export const SCHEMAS: Record<string, unknown> = {
         "type": "integer"
       },
       "flow": {
+        "type": "string"
+      },
+      "forwardedPorts": {
         "type": "string"
       },
       "group": {
@@ -1310,6 +1627,7 @@ export const SCHEMAS: Record<string, unknown> = {
       "enable",
       "expiryTime",
       "flow",
+      "forwardedPorts",
       "group",
       "id",
       "keepAlive",
@@ -1343,6 +1661,105 @@ export const SCHEMAS: Record<string, unknown> = {
     },
     "required": [
       "tag"
+    ],
+    "type": "object"
+  },
+  "ClientSlim": {
+    "description": "ClientSlim is the row-shape used by the clients page. It drops fields the\ntable never reads (UUID, password, auth, flow, security, reverse, tgId)\nso the list payload stays compact even when the panel manages thousands\nof clients. Modals that need the full record still call /get/:email.",
+    "properties": {
+      "comment": {
+        "example": "Primary device",
+        "type": "string"
+      },
+      "createdAt": {
+        "example": 1735000000000,
+        "format": "int64",
+        "type": "integer"
+      },
+      "email": {
+        "example": "alice@example.com",
+        "type": "string"
+      },
+      "enable": {
+        "example": true,
+        "type": "boolean"
+      },
+      "expiryTime": {
+        "example": 1735689600000,
+        "format": "int64",
+        "type": "integer"
+      },
+      "group": {
+        "example": "staff",
+        "type": "string"
+      },
+      "inboundIds": {
+        "example": [
+          3,
+          5
+        ],
+        "items": {
+          "type": "integer"
+        },
+        "type": "array"
+      },
+      "limitHwid": {
+        "example": 0,
+        "type": "integer"
+      },
+      "limitIp": {
+        "example": 0,
+        "type": "integer"
+      },
+      "reset": {
+        "example": 0,
+        "type": "integer"
+      },
+      "resetDay": {
+        "example": 0,
+        "type": "integer"
+      },
+      "resetMax": {
+        "example": 0,
+        "type": "integer"
+      },
+      "subId": {
+        "example": "abcd1234",
+        "type": "string"
+      },
+      "totalGB": {
+        "example": 53687091200,
+        "format": "int64",
+        "type": "integer"
+      },
+      "traffic": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ClientTraffic"
+          }
+        ],
+        "nullable": true
+      },
+      "updatedAt": {
+        "example": 1735100000000,
+        "format": "int64",
+        "type": "integer"
+      }
+    },
+    "required": [
+      "createdAt",
+      "email",
+      "enable",
+      "expiryTime",
+      "inboundIds",
+      "limitHwid",
+      "limitIp",
+      "reset",
+      "resetDay",
+      "resetMax",
+      "subId",
+      "totalGB",
+      "updatedAt"
     ],
     "type": "object"
   },
@@ -1440,6 +1857,80 @@ export const SCHEMAS: Record<string, unknown> = {
       "total",
       "up",
       "uuid"
+    ],
+    "type": "object"
+  },
+  "ClientsSummary": {
+    "description": "ClientsSummary collects per-bucket counts plus the matching email lists so\nthe clients page can render the dashboard stat cards and their hover\npopovers without shipping the full client array. The counters are exact;\nthe lists stop at clientSummaryEmailCap entries and only back the popovers.",
+    "properties": {
+      "active": {
+        "example": 1850,
+        "type": "integer"
+      },
+      "deactive": {
+        "example": [
+          "bob@example.com"
+        ],
+        "items": {
+          "type": "string"
+        },
+        "type": "array"
+      },
+      "deactiveCount": {
+        "example": 150,
+        "type": "integer"
+      },
+      "depleted": {
+        "example": [],
+        "items": {
+          "type": "string"
+        },
+        "type": "array"
+      },
+      "depletedCount": {
+        "example": 0,
+        "type": "integer"
+      },
+      "expiring": {
+        "example": [],
+        "items": {
+          "type": "string"
+        },
+        "type": "array"
+      },
+      "expiringCount": {
+        "example": 0,
+        "type": "integer"
+      },
+      "online": {
+        "example": [
+          "alice@example.com"
+        ],
+        "items": {
+          "type": "string"
+        },
+        "type": "array"
+      },
+      "onlineCount": {
+        "example": 1,
+        "type": "integer"
+      },
+      "total": {
+        "example": 2000,
+        "type": "integer"
+      }
+    },
+    "required": [
+      "active",
+      "deactive",
+      "deactiveCount",
+      "depleted",
+      "depletedCount",
+      "expiring",
+      "expiringCount",
+      "online",
+      "onlineCount",
+      "total"
     ],
     "type": "object"
   },
@@ -1975,6 +2466,39 @@ export const SCHEMAS: Record<string, unknown> = {
     ],
     "type": "object"
   },
+  "HwidSlotStatus": {
+    "description": "HwidSlotStatus is the aggregate device-slot view exposed to subscribers:\ncounters only, no hwid value or hash, no email, no device metadata.",
+    "properties": {
+      "active": {
+        "example": true,
+        "type": "boolean"
+      },
+      "full": {
+        "example": false,
+        "type": "boolean"
+      },
+      "limit": {
+        "example": 2,
+        "type": "integer"
+      },
+      "registered": {
+        "example": 1,
+        "type": "integer"
+      },
+      "remaining": {
+        "example": 1,
+        "type": "integer"
+      }
+    },
+    "required": [
+      "active",
+      "full",
+      "limit",
+      "registered",
+      "remaining"
+    ],
+    "type": "object"
+  },
   "Inbound": {
     "description": "Inbound represents an Xray inbound configuration with traffic statistics and settings.",
     "properties": {
@@ -2053,7 +2577,8 @@ export const SCHEMAS: Record<string, unknown> = {
           "mixed",
           "tunnel",
           "tun",
-          "mtproto"
+          "mtproto",
+          "amneziawg"
         ],
         "example": "vless",
         "type": "string"
@@ -2205,6 +2730,15 @@ export const SCHEMAS: Record<string, unknown> = {
   },
   "InboundOption": {
     "properties": {
+      "awgServer": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ServerSettings"
+          }
+        ],
+        "description": "AwgServer carries the full AmneziaWG server block (keys, subnet,\nobfuscation params) so the clients page can render a downloadable\nper-client .conf without a second round trip.",
+        "nullable": true
+      },
       "enable": {
         "example": true,
         "type": "boolean"
@@ -2217,6 +2751,9 @@ export const SCHEMAS: Record<string, unknown> = {
         "type": "string"
       },
       "mtprotoDomain": {
+        "type": "string"
+      },
+      "network": {
         "type": "string"
       },
       "nodeAddress": {
@@ -2238,6 +2775,9 @@ export const SCHEMAS: Record<string, unknown> = {
       },
       "remark": {
         "example": "VLESS-443",
+        "type": "string"
+      },
+      "security": {
         "type": "string"
       },
       "shareAddr": {
@@ -2279,6 +2819,118 @@ export const SCHEMAS: Record<string, unknown> = {
     ],
     "type": "object"
   },
+  "InboundTrafficSummary": {
+    "properties": {
+      "down": {
+        "example": 2097152,
+        "format": "int64",
+        "type": "integer"
+      },
+      "enable": {
+        "example": true,
+        "type": "boolean"
+      },
+      "id": {
+        "example": 1,
+        "type": "integer"
+      },
+      "total": {
+        "example": 10737418240,
+        "format": "int64",
+        "type": "integer"
+      },
+      "up": {
+        "example": 1048576,
+        "format": "int64",
+        "type": "integer"
+      }
+    },
+    "required": [
+      "down",
+      "enable",
+      "id",
+      "total",
+      "up"
+    ],
+    "type": "object"
+  },
+  "LogEntry": {
+    "properties": {
+      "DateTime": {
+        "example": "2025-01-01T12:00:00Z",
+        "format": "date-time",
+        "type": "string"
+      },
+      "Email": {
+        "example": "alice@example.com",
+        "type": "string"
+      },
+      "Event": {
+        "example": 0,
+        "type": "integer"
+      },
+      "FromAddress": {
+        "example": "192.0.2.10:54321",
+        "type": "string"
+      },
+      "Inbound": {
+        "example": "inbound-443",
+        "type": "string"
+      },
+      "Outbound": {
+        "example": "direct",
+        "type": "string"
+      },
+      "ToAddress": {
+        "example": "example.com:443",
+        "type": "string"
+      }
+    },
+    "required": [
+      "DateTime",
+      "Email",
+      "Event",
+      "FromAddress",
+      "Inbound",
+      "Outbound",
+      "ToAddress"
+    ],
+    "type": "object"
+  },
+  "MLDSA65Response": {
+    "properties": {
+      "seed": {
+        "example": "mldsa65-seed",
+        "type": "string"
+      },
+      "verify": {
+        "example": "mldsa65-verify",
+        "type": "string"
+      }
+    },
+    "required": [
+      "seed",
+      "verify"
+    ],
+    "type": "object"
+  },
+  "MLKEM768Response": {
+    "properties": {
+      "client": {
+        "example": "mlkem768-client",
+        "type": "string"
+      },
+      "seed": {
+        "example": "mlkem768-seed",
+        "type": "string"
+      }
+    },
+    "required": [
+      "client",
+      "seed"
+    ],
+    "type": "object"
+  },
   "Msg": {
     "properties": {
       "msg": {
@@ -2293,6 +2945,18 @@ export const SCHEMAS: Record<string, unknown> = {
       "msg",
       "obj",
       "success"
+    ],
+    "type": "object"
+  },
+  "NewUUIDResponse": {
+    "properties": {
+      "uuid": {
+        "example": "550e8400-e29b-41d4-a716-446655440000",
+        "type": "string"
+      }
+    },
+    "required": [
+      "uuid"
     ],
     "type": "object"
   },
@@ -2887,6 +3551,68 @@ export const SCHEMAS: Record<string, unknown> = {
     ],
     "type": "object"
   },
+  "PeerActivity": {
+    "description": "PeerActivity is one peer's live embedded-Device-reported state, the\ncounterpart of an Xray access-log entry: a tunnel logs no requests, only\nhandshakes and bytes.",
+    "properties": {
+      "allowedIPs": {
+        "example": "10.8.1.2/32",
+        "type": "string"
+      },
+      "down": {
+        "example": 4194304,
+        "format": "int64",
+        "type": "integer"
+      },
+      "email": {
+        "example": "peer@example.com",
+        "type": "string"
+      },
+      "endpoint": {
+        "example": "203.0.113.9:51820",
+        "type": "string"
+      },
+      "handshake": {
+        "description": "Handshake is unix milliseconds, 0 when the peer has never connected.",
+        "example": 1735732800000,
+        "format": "int64",
+        "type": "integer"
+      },
+      "inboundId": {
+        "example": 1,
+        "type": "integer"
+      },
+      "interface": {
+        "example": "awg1",
+        "type": "string"
+      },
+      "online": {
+        "example": true,
+        "type": "boolean"
+      },
+      "tag": {
+        "example": "inbound-51820",
+        "type": "string"
+      },
+      "up": {
+        "example": 1048576,
+        "format": "int64",
+        "type": "integer"
+      }
+    },
+    "required": [
+      "allowedIPs",
+      "down",
+      "email",
+      "endpoint",
+      "handshake",
+      "inboundId",
+      "interface",
+      "online",
+      "tag",
+      "up"
+    ],
+    "type": "object"
+  },
   "ProbeResultUI": {
     "properties": {
       "cpuPct": {
@@ -3053,6 +3779,150 @@ export const SCHEMAS: Record<string, unknown> = {
     ],
     "type": "object"
   },
+  "ServerSettings": {
+    "description": "ServerSettings is the \"server\" block of an AmneziaWG inbound's Settings\nJSON: the interface-level configuration shared by every client/peer. The\nlisten port is deliberately not duplicated here — it lives on the inbound\nrow itself (Inbound.Port), like every other protocol.",
+    "properties": {
+      "contentPaddingAddition": {
+        "type": "string"
+      },
+      "disableCookies": {
+        "type": "boolean"
+      },
+      "externalInterface": {
+        "description": "ExternalInterface, IPv6Enabled, and IPv6ExternalInterface are live\nagain as of Phase 3.5 -- see the matching fields on Instance for what\nthey gate (internal/amneziawgnet's IPv6-address-alias mechanism).\nIPv6Subnet was never actually vestigial either: InstanceFromInbound\nalready consumes it (via serverAddressV6) to build the server's own\ntunnel address, same as always. Only RouteThroughXray, below, remains\ngenuinely vestigial as of the hard cutover to the embedded path\n(internal/amneziawgnet) -- read from existing stored settings for\nbackward compatibility, but not acted on by anything.",
+        "type": "string"
+      },
+      "h1": {
+        "type": "string"
+      },
+      "h2": {
+        "type": "string"
+      },
+      "h3": {
+        "type": "string"
+      },
+      "h4": {
+        "type": "string"
+      },
+      "headerProtectionKey": {
+        "description": "HeaderProtectionKey and ContentPaddingAddition are AmneziaWG 3.0\nfields, flat and top-level for the same tools/openapigen reason as\nthe block above; Obfuscation() below folds them back into\nObfuscation31's own identically named fields.\nHeaderProtectionKey is a base64 32-byte key; empty (the default)\ndisables AWG 3.0 header protection. A non-empty value requires\nevery one of S1-S4 above to be \u003e= 12 -- ValidateObfuscation\nenforces this at save time, not just at IpcSet time.\nContentPaddingAddition is a \"low-high\" range or bare integer, the\nsame grammar and uint32 cap as H1-H4.",
+        "type": "string"
+      },
+      "i1": {
+        "type": "string"
+      },
+      "i2": {
+        "type": "string"
+      },
+      "i3": {
+        "type": "string"
+      },
+      "i4": {
+        "type": "string"
+      },
+      "i5": {
+        "type": "string"
+      },
+      "ipv6Enabled": {
+        "type": "boolean"
+      },
+      "ipv6ExternalInterface": {
+        "type": "string"
+      },
+      "ipv6Subnet": {
+        "type": "string"
+      },
+      "jc": {
+        "description": "Obfuscation31's fields, repeated flat (not embedded) rather than\nnested under their own key: encoding/json would happily inline an\nembedded Obfuscation31 the same way, but the frontend's Go-\u003eZod/TS\ngenerator (tools/openapigen) does not — it emits a genuinely nested\n`obfuscation31` object, which would silently diverge from the real\nwire JSON. See Obfuscation() below for the manager-facing conversion.",
+        "type": "integer"
+      },
+      "jmax": {
+        "type": "integer"
+      },
+      "jmin": {
+        "type": "integer"
+      },
+      "keepaliveTimeout": {
+        "type": "string"
+      },
+      "maxHandshakeAttempts": {
+        "type": "string"
+      },
+      "mtu": {
+        "type": "integer"
+      },
+      "primaryDns": {
+        "description": "PrimaryDNS/SecondaryDNS seed client configs' DNS line. Blank is\nmeaningful, so no omitempty: a dropped key resurrects frontend defaults.",
+        "type": "string"
+      },
+      "privateKey": {
+        "type": "string"
+      },
+      "publicKey": {
+        "type": "string"
+      },
+      "randomTrailers": {
+        "description": "RandomTrailers/DisableCookies mirror Instance's identically named\nAmneziaWG 3.1 fields -- see that type's own doc comment for the real\nprotocol/interop details. Both real bool fields (not omitempty):\nbuildUAPIConfig always emits both lines explicitly so the\nreconfigure-in-place diff correctly notices a true-\u003efalse edit, not\njust false-\u003etrue.",
+        "type": "boolean"
+      },
+      "rejectAfterTime": {
+        "type": "string"
+      },
+      "rekeyAfterTime": {
+        "description": "RekeyAfterTime/RekeyTimeout/RejectAfterTime/KeepaliveTimeout/\nMaxHandshakeAttempts mirror Instance's identically named fields --\nsee that type's own doc comment for the grammar/width/real-default\ndetails. Flat and top-level for the same tools/openapigen reason as\nthe rest of this struct.",
+        "type": "string"
+      },
+      "rekeyTimeout": {
+        "type": "string"
+      },
+      "routeThroughXray": {
+        "type": "boolean"
+      },
+      "s1": {
+        "type": "integer"
+      },
+      "s2": {
+        "type": "integer"
+      },
+      "s3": {
+        "type": "integer"
+      },
+      "s4": {
+        "type": "integer"
+      },
+      "secondaryDns": {
+        "type": "string"
+      },
+      "subnetCidr": {
+        "type": "integer"
+      },
+      "subnetIp": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "disableCookies",
+      "h1",
+      "h2",
+      "h3",
+      "h4",
+      "jc",
+      "jmax",
+      "jmin",
+      "primaryDns",
+      "privateKey",
+      "publicKey",
+      "randomTrailers",
+      "s1",
+      "s2",
+      "s3",
+      "s4",
+      "secondaryDns",
+      "subnetCidr",
+      "subnetIp"
+    ],
+    "type": "object"
+  },
   "Setting": {
     "description": "Setting stores key-value configuration settings for the 3x-ui panel.",
     "properties": {
@@ -3100,6 +3970,13 @@ export const SCHEMAS: Record<string, unknown> = {
         },
         "type": "array"
       },
+      "memberWeights": {
+        "additionalProperties": {
+          "type": "number"
+        },
+        "description": "inboundId -\u003e leastLoad weight; absent entries mean 1.0. Only meaningful\nwith Strategy \"leastLoad\" — xray ignores costs on every other strategy.",
+        "type": "object"
+      },
       "remark": {
         "example": "auto-fastest",
         "maxLength": 256,
@@ -3135,6 +4012,41 @@ export const SCHEMAS: Record<string, unknown> = {
       "sortOrder",
       "strategy",
       "updatedAt"
+    ],
+    "type": "object"
+  },
+  "Traffic": {
+    "description": "Traffic represents network traffic statistics for Xray connections.\nIt tracks upload and download bytes for inbound or outbound traffic.",
+    "properties": {
+      "Down": {
+        "example": 2097152,
+        "format": "int64",
+        "type": "integer"
+      },
+      "IsInbound": {
+        "example": true,
+        "type": "boolean"
+      },
+      "IsOutbound": {
+        "example": false,
+        "type": "boolean"
+      },
+      "Tag": {
+        "example": "inbound-443",
+        "type": "string"
+      },
+      "Up": {
+        "example": 1048576,
+        "format": "int64",
+        "type": "integer"
+      }
+    },
+    "required": [
+      "Down",
+      "IsInbound",
+      "IsOutbound",
+      "Tag",
+      "Up"
     ],
     "type": "object"
   },

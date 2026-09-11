@@ -1081,6 +1081,19 @@ func TestMarshalFinalMask_KeepsXmcTcpMask(t *testing.T) {
 	}
 }
 
+func TestMarshalFinalMask_KeepsUdpHopMask(t *testing.T) {
+	fm := map[string]any{
+		"udp": []any{udpHopMask("20000-50000")},
+	}
+	out, ok := marshalFinalMask(fm)
+	if !ok {
+		t.Fatal("expected ok=true for a udphop udp mask")
+	}
+	if !strings.Contains(out, "udphop") || !strings.Contains(out, "20000-50000") {
+		t.Fatalf("marshaled finalmask dropped the udphop mask: %s", out)
+	}
+}
+
 func TestHasFinalMaskContent(t *testing.T) {
 	if hasFinalMaskContent(nil) {
 		t.Fatal("nil should not count as content")
@@ -1127,6 +1140,13 @@ func TestHysteriaPinHex(t *testing.T) {
 	}
 }
 
+func udpHopMask(ports string) map[string]any {
+	return map[string]any{
+		"type":     "udphop",
+		"settings": map[string]any{"mode": "intervalremote", "interval": "5-10", "remotePorts": ports},
+	}
+}
+
 func TestHysteriaHopPorts(t *testing.T) {
 	withHop := func(ports any) map[string]any {
 		return map[string]any{
@@ -1137,6 +1157,11 @@ func TestHysteriaHopPorts(t *testing.T) {
 			},
 		}
 	}
+	withHopMask := func(ports string) map[string]any {
+		return map[string]any{
+			"finalmask": map[string]any{"udp": []any{udpHopMask(ports)}},
+		}
+	}
 
 	cases := []struct {
 		name   string
@@ -1144,6 +1169,14 @@ func TestHysteriaHopPorts(t *testing.T) {
 		want   string
 	}{
 		{"range", withHop("20000-50000"), "20000-50000"},
+		{"udphop mask", withHopMask("20000-50000"), "20000-50000"},
+		{"udphop mask wins over legacy key", map[string]any{
+			"finalmask": map[string]any{
+				"udp":        []any{udpHopMask("30000-40000")},
+				"quicParams": map[string]any{"udpHop": map[string]any{"ports": "20000-50000"}},
+			},
+		}, "30000-40000"},
+		{"udphop mask without remotePorts", withHopMask(""), ""},
 		{"trimmed", withHop("  443,20000-50000  "), "443,20000-50000"},
 		{"empty string", withHop(""), ""},
 		{"non-string", withHop(float64(443)), ""},
@@ -1187,5 +1220,35 @@ func TestGenHysteriaLinkOmitsFinalMaskQueryParam(t *testing.T) {
 	}
 	if !strings.Contains(got, "obfs-password=obfs-secret") {
 		t.Fatalf("missing standard obfs-password: %s", got)
+	}
+}
+
+func TestGenHysteriaLinkKeepsHopPortsWithExternalProxy(t *testing.T) {
+	stream := `{
+		"security":"tls",
+		"tlsSettings":{"serverName":"hy.sni"},
+		"finalmask":{"quicParams":{"udpHop":{"ports":"20000-50000","interval":"5-10"}}},
+		"externalProxy":[
+			{"dest":"cdn.example.com","port":8443},
+			{"dest":"2001:db8::10","port":9443}
+		]
+	}`
+	in := &model.Inbound{
+		Listen:         "203.0.113.1",
+		Port:           443,
+		Protocol:       model.Hysteria,
+		Remark:         "hy2",
+		Settings:       `{"version":2,"clients":[{"auth":"hyauth","email":"user"}]}`,
+		StreamSettings: stream,
+	}
+	got := (&SubService{}).genHysteriaLink(in, "user")
+	links := strings.Split(got, "\n")
+	if len(links) != 2 {
+		t.Fatalf("expected one link per external proxy, got %d: %q", len(links), got)
+	}
+	for _, link := range links {
+		if !strings.Contains(link, "mport=20000-50000") {
+			t.Fatalf("external-proxy link lost the UDP hop range: %s", link)
+		}
 	}
 }

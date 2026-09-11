@@ -33,7 +33,11 @@ import {
 } from '@ant-design/icons';
 
 import { ClipboardManager, IntlUtil, LanguageManager } from '@/utils';
-import { isPostQuantumLink, wireguardConfigFromLink } from '@/lib/xray/inbound-link';
+import {
+  amneziawgConfigFromLink,
+  isPostQuantumLink,
+  wireguardConfigFromLink,
+} from '@/lib/xray/inbound-link';
 import { LinkTags, parseLinkParts } from '@/lib/xray/link-label';
 import ConfigBlock from '@/components/clients/ConfigBlock';
 import { setMessageInstance } from '@/utils/messageBus';
@@ -89,11 +93,11 @@ export default function SubPage() {
     setMessageInstance(messageApi);
   }, [messageApi]);
   const { isMobile } = useMediaQuery(576);
-  const [lang, setLang] = useState<string>(() => LanguageManager.getLanguage());
+  const [lang, setLang] = useState<string>(() => LanguageManager.getLanguage('subscription'));
 
   const onLangChange = useCallback((next: string) => {
     setLang(next);
-    LanguageManager.setLanguage(next);
+    LanguageManager.setLanguage(next, 'subscription');
   }, []);
 
   const cycleTheme = useCallback(() => {
@@ -182,16 +186,18 @@ export default function SubPage() {
     items.push({
       key: 'lastOnline',
       label: t('lastOnline'),
-      children: lastOnlineMs > 0 ? IntlUtil.formatDate(lastOnlineMs, datepicker) : '-',
+      children: lastOnlineMs > 0 ? IntlUtil.formatDate(lastOnlineMs, datepicker, lang) : '-',
     });
     items.push({
       key: 'expiry',
       label: t('subscription.expiry'),
       children:
-        expireMs === 0 ? t('subscription.noExpiry') : IntlUtil.formatDate(expireMs, datepicker),
+        expireMs === 0
+          ? t('subscription.noExpiry')
+          : IntlUtil.formatDate(expireMs, datepicker, lang),
     });
     return items;
-  }, [t]);
+  }, [t, lang]);
 
   const androidMenuItems = useMemo(
     () => [
@@ -533,6 +539,7 @@ export default function SubPage() {
                         const canQr = !isPostQuantumLink(link);
                         const isWireguardLink =
                           link.startsWith('wireguard://') || link.startsWith('wg://');
+                        const isAmneziawgLink = link.startsWith('vpn://');
                         return (
                           <Fragment key={link}>
                             <div className="sub-link-row">
@@ -588,6 +595,15 @@ export default function SubPage() {
                                 fileName={`${rowTitle || 'peer'}.conf`}
                                 qrRemark={rowTitle}
                                 tagColor="cyan"
+                              />
+                            )}
+                            {isAmneziawgLink && (
+                              <ConfigBlock
+                                label={t('pages.clients.amneziaWgConfig')}
+                                text={amneziawgConfigFromLink(link)}
+                                fileName={`${rowTitle || 'peer'}.conf`}
+                                qrRemark={rowTitle}
+                                tagColor="purple"
                               />
                             )}
                           </Fragment>

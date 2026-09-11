@@ -285,7 +285,8 @@ node heartbeat every 5s, periodic traffic resets (hourly/daily/weekly/monthly). 
 ├── x-ui.service.*  / x-ui.rc                               # systemd units (debian/rhel/arch) + rc script
 ├── windows_files/                                          # Windows service support
 └── .github/workflows/        # CI: ci.yml, codeql.yml, docker.yml, release.yml, smoke.yml,
-                              #     mutation.yml, cleanup_caches.yml, claude-bot.yml
+                              #     mutation.yml, cleanup_caches.yml, claude-pr-review.yml,
+                              #     claude-issue-analyst.yml
 ```
 
 ---
@@ -373,6 +374,7 @@ All registered in `web.go` → `startTask()`. Each is a struct with a `Run()` me
 | `@every 5s`         | `node_traffic_sync_job`                                                                          | Pull + merge node traffic; push reconciliation                                  |
 | `@every 10s`        | `check_client_ip_job`                                                                            | Enforce per-client IP limits                                                    |
 | `@every 10s`        | `mtproto_job`                                                                                    | Reconcile `mtg` sidecars against enabled MTProto inbounds                       |
+| `@every 10s`        | `amneziawg_job`                                                                                  | Reconcile embedded AmneziaWG interfaces against enabled local inbounds          |
 | `@every 5m`         | `outbound_subscription_job`                                                                      | Refresh outbound provider configs                                               |
 | `@every 10m`        | `clear_logs_job` (`PruneXrayLogsJob`)                                                            | Truncate Xray access/error logs once either exceeds 64 MiB                      |
 | `@hourly`           | `warp_ip_job`, `periodic_traffic_reset_job("hourly")`                                            | WARP IP rotation; traffic resets                                                |
@@ -572,7 +574,8 @@ root → `go build ./...` / `go run main.go`.
 
 **CI** (`.github/workflows/`): `ci.yml` (build/test/lint), `codeql.yml` (security scan),
 `smoke.yml` (smoke tests), `mutation.yml` (mutation testing), `docker.yml` + `release.yml`
-(multi-arch image + release builds), `cleanup_caches.yml`, `claude-bot.yml` (issue bot).
+(multi-arch image + release builds), `cleanup_caches.yml`, `claude-pr-review.yml` (PR review
+only - it changes no code), `claude-issue-analyst.yml` (issue triage).
 
 ---
 
@@ -597,3 +600,30 @@ root → `go build ./...` / `go run main.go`.
 - **Tests live next to code** (`foo.go` ↔ `foo_test.go`), plus golden snapshots in
   `frontend/src/test/golden/fixtures/` for config generation — update fixtures intentionally,
   not blindly, when output changes.
+
+## AmneziaWG outbound pseudo-protocol
+
+The template stores `protocol: "amneziawg"` rows verbatim; Xray-core has no
+such proxy. At config generation (`GetXrayConfig` and the outbound latency
+probe's batch config) each row is swapped by `amneziawgnet.BuildSocksBridge`
+into a loopback socks outbound pointed at the panel's egress server (port
+`EgressBasePort`), authenticating with the row's tag as username. Sibling keys
+(`mux`, `sendThrough`, `targetStrategy`, `streamSettings.sockopt`) survive the
+swap. The embedded amneziawg-go client device lives in the panel process; an
+unbridgeable entry (unreadable settings, empty/non-string tag) fails config
+generation instead of skipping, because a skipped entry leaves
+`protocol: "amneziawg"` behind -- which makes Xray refuse the whole config.
+
+Traffic flow: Xray socks client -> egress SOCKS5 server (tag = username) ->
+per-tag device netstack -> amneziawg-go tunnel. Domain targets are resolved by
+a DNS exchange through that same netstack (`resolveTunnelVia`, default server
+`DefaultTunnelDNSServer`), so names never leak to the panel host's resolver and
+answers are valid at the tunnel's location; results cache for 60s. UDP flows
+key sessions on the resolved address:port. Peer endpoints may be hostnames:
+`resolvingBind.ParseEndpoint` resolves once at configure time (kernel
+`wg setconf` semantics); a hostname whose DNS dies later needs a template
+re-save or job restart to re-resolve.
+
+`randomTrailers` defaults to false wherever the panel does not control the
+peer (outbound form/schema): a receiver without 3.1 trailers silently drops
+oversized packets from a sender with it enabled.

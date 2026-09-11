@@ -6,12 +6,16 @@ import type { CollapseProps } from 'antd';
 import { Protocols } from '@/schemas/primitives';
 import {
   genAllLinks,
+  genAmneziaWGConfigs,
+  genAmneziaWGLinks,
   genWireguardConfigs,
   genWireguardLinks,
   isPostQuantumLink,
   preferPublicHost,
 } from '@/lib/xray/inbound-link';
 import { inboundFromDb, type DbInboundLike } from '@/lib/xray/inbound-from-db';
+import { withMtprotoHostEndpoints } from '@/lib/hosts/host-link';
+import type { HostRecord } from '@/schemas/api/host';
 import QrPanel from './QrPanel';
 import type { SubSettings } from '../useInbounds';
 
@@ -24,10 +28,11 @@ interface ClientSetting {
 interface QrCodeModalProps {
   open: boolean;
   onClose: () => void;
-  dbInbound: (DbInboundLike & { remark?: string }) | null;
+  dbInbound: (DbInboundLike & { id: number; remark?: string }) | null;
   client?: ClientSetting | null;
   nodeAddress?: string;
   subSettings?: SubSettings;
+  hosts?: HostRecord[];
 }
 
 interface QrItem {
@@ -38,6 +43,8 @@ interface QrItem {
   showQr?: boolean;
 }
 
+const EMPTY_HOSTS: HostRecord[] = [];
+
 export default function QrCodeModal({
   open,
   onClose,
@@ -45,11 +52,14 @@ export default function QrCodeModal({
   client = null,
   nodeAddress = '',
   subSettings,
+  hosts = EMPTY_HOSTS,
 }: QrCodeModalProps) {
   const { t } = useTranslation();
   const [links, setLinks] = useState<{ remark?: string; link: string }[]>([]);
   const [wireguardConfigs, setWireguardConfigs] = useState<string[]>([]);
   const [wireguardLinks, setWireguardLinks] = useState<string[]>([]);
+  const [amneziawgConfigs, setAmneziawgConfigs] = useState<string[]>([]);
+  const [amneziawgLinks, setAmneziawgLinks] = useState<string[]>([]);
   const [subLink, setSubLink] = useState('');
   const [subJsonLink, setSubJsonLink] = useState('');
   const [activeKey, setActiveKey] = useState<string[]>([]);
@@ -61,6 +71,7 @@ export default function QrCodeModal({
     client: typeof client;
     nodeAddress: typeof nodeAddress;
     subSettings: typeof subSettings;
+    hosts: typeof hosts;
   } | null>(null);
   if (
     open &&
@@ -69,13 +80,20 @@ export default function QrCodeModal({
       syncedProps.dbInbound !== dbInbound ||
       syncedProps.client !== client ||
       syncedProps.nodeAddress !== nodeAddress ||
-      syncedProps.subSettings !== subSettings)
+      syncedProps.subSettings !== subSettings ||
+      syncedProps.hosts !== hosts)
   ) {
-    setSyncedProps({ dbInbound, client, nodeAddress, subSettings });
-    const inbound = inboundFromDb(dbInbound);
+    setSyncedProps({ dbInbound, client, nodeAddress, subSettings, hosts });
     const fallbackHostname = preferPublicHost(
       window.location.hostname,
       subSettings?.publicHost ?? '',
+    );
+    const inbound = withMtprotoHostEndpoints(
+      inboundFromDb(dbInbound),
+      dbInbound.id,
+      hosts,
+      nodeAddress,
+      fallbackHostname,
     );
     if (inbound.protocol === Protocols.WIREGUARD) {
       const peerRemark = client?.email
@@ -97,6 +115,31 @@ export default function QrCodeModal({
           fallbackHostname,
         }).split('\r\n'),
       );
+      setAmneziawgConfigs([]);
+      setAmneziawgLinks([]);
+      setLinks([]);
+    } else if (inbound.protocol === Protocols.AMNEZIAWG) {
+      const peerRemark = client?.email
+        ? `${dbInbound.remark}-${client.email}`
+        : dbInbound.remark || '';
+      setAmneziawgConfigs(
+        genAmneziaWGConfigs({
+          inbound,
+          remark: peerRemark,
+          hostOverride: nodeAddress,
+          fallbackHostname,
+        }).split('\r\n'),
+      );
+      setAmneziawgLinks(
+        genAmneziaWGLinks({
+          inbound,
+          remark: peerRemark,
+          hostOverride: nodeAddress,
+          fallbackHostname,
+        }).split('\r\n'),
+      );
+      setWireguardConfigs([]);
+      setWireguardLinks([]);
       setLinks([]);
     } else {
       setLinks(
@@ -110,6 +153,8 @@ export default function QrCodeModal({
       );
       setWireguardConfigs([]);
       setWireguardLinks([]);
+      setAmneziawgConfigs([]);
+      setAmneziawgLinks([]);
     }
 
     const subId = client?.subId;
@@ -154,8 +199,33 @@ export default function QrCodeModal({
         });
       }
     });
+    amneziawgConfigs.forEach((cfg, idx) => {
+      items.push({
+        key: `ac${idx}`,
+        header: `Peer ${idx + 1} config`,
+        value: cfg,
+        downloadName: `peer-${idx + 1}.conf`,
+      });
+      if (amneziawgLinks[idx]) {
+        items.push({
+          key: `al${idx}`,
+          header: `Peer ${idx + 1} link`,
+          value: amneziawgLinks[idx],
+          showQr: false,
+        });
+      }
+    });
     return items;
-  }, [subLink, subJsonLink, links, wireguardConfigs, wireguardLinks, t]);
+  }, [
+    subLink,
+    subJsonLink,
+    links,
+    wireguardConfigs,
+    wireguardLinks,
+    amneziawgConfigs,
+    amneziawgLinks,
+    t,
+  ]);
 
   const collapseItems: CollapseProps['items'] = useMemo(
     () =>
