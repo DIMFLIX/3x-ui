@@ -640,6 +640,8 @@
         "scanCert": "گواهی",
         "scanCertInvalid": "نامعتبر",
         "scanCertExpiry": "انقضای گواهی",
+        "scanCertChain": "زنجیره گواهی",
+        "scanMldsaCertChainTooSmall": "زنجیره گواهی هدف {length} بایت است که کمتر از حداقل {min} بایت مورد نیاز ML-DSA-65 است. این باعث شکست بی‌صدای اتصال می‌شود. هدف دیگری انتخاب کنید یا ML-DSA-65 را غیرفعال کنید.",
         "scanSniUsed": "SNI استفاده‌شده",
         "scanPrivateNote": "بررسی از طریق شبکهٔ خصوصی/محلی انجام شد — این نشانی از اینترنت قابل دسترسی نیست.",
         "scanPrivateConfirmTitle": "هدف در شبکهٔ محلی",
@@ -675,7 +677,8 @@
           "node": "آدرس نود",
           "listen": "آدرس شنود ورودی",
           "custom": "سفارشی"
-        }
+        },
+        "autoFill": "تکمیل خودکار"
       },
       "info": {
         "mode": "حالت",
@@ -694,7 +697,8 @@
         "peerNumber": "Peer {n}",
         "peerNumberConfig": "پیکربندی Peer {n}"
       },
-      "sniffingDestOverride": "بازنویسی مقصد"
+      "sniffingDestOverride": "بازنویسی مقصد",
+      "advancedTitle": "تنظیمات پیشرفته"
     },
     "clients": {
       "tabBasics": "پایه",
@@ -760,6 +764,7 @@
       "noHwids": "هنوز دستگاه HWID ثبت نشده است",
       "firstSeen": "اولین مشاهده",
       "lastSeen": "آخرین مشاهده",
+      "hwidFingerprint": "اثر انگشت HWID",
       "deleteHwid": "حذف دستگاه",
       "deleteHwidConfirm": "این دستگاه حذف شود؟ در دریافت بعدی اشتراک باید دوباره ثبت‌نام شود.",
       "hwidDeleted": "دستگاه حذف شد.",
@@ -882,6 +887,7 @@
       "tunnelKeepAlive": "Keepalive (seconds)",
       "tunnelKeepAliveHint": "How often the client sends a keepalive packet. 25 is the usual value: it holds the NAT mapping open and brings an idle peer back on its own after any drop, including a panel restart. 0 disables it — an idle client then stays disconnected until it sends traffic.",
       "amneziaWgConfig": "پیکربندی AmneziaWG",
+      "tuicConfig": "پیکربندی TUIC (Clash)",
       "mtprotoSecret": "سکرت MTProto",
       "mtprotoSecretHint": "سکرت FakeTLS این کلاینت. برای تعویض، دوباره تولید کنید.",
       "mtprotoAdTag": "برچسب تبلیغاتی (کانال حامی)",
@@ -915,6 +921,7 @@
       "renewOnDay": "روز تمدید",
       "renewOnDayDesc": "در این روز از هر ماه تقویمی، در نیمه‌شب به وقت پنل تمدید می‌شود، به جای هر N روز. اگر ماه کوتاه‌تر از روز انتخابی باشد، در آخرین روز آن ماه تمدید می‌شود. مقدار ۰ حالت بازهٔ روزانه را حفظ می‌کند.",
       "renewsUsed": "تمدیدهای استفاده‌شده",
+      "tuicTotalGBDesc": "TUIC does not support per-client traffic limits; set traffic limit on the inbound instead.",
       "bulkAdTagHint": "یک برچسب هگز ۳۲ کاراکتری برای تنظیم وارد کنید، یا 'none' برای پاک کردن در MTProto."
     },
     "groups": {
@@ -1175,6 +1182,8 @@
       "subJsonUserAgentRegexDesc": "عبارت منظم Go RE2 که با عامل کاربر (User-Agent) کلاینت مطابقت داده می‌شود تا صیغه Xray JSON روی آدرس استاندارد اشتراک به‌طور خودکار انتخاب شود. به‌طور پیش‌فرض خالی است، بنابراین تشخیص خودکار غیرفعال می‌ماند تا زمانی که الگویی برای کلاینت‌های موردنظر خود تعیین کنید. سایر کلاینت‌ها پاسخ خام/Base64 را دریافت می‌کنند. پس از تغییر، پنل را راه‌اندازی مجدد کنید.",
       "subJsonRoutingRules": "پروفایل مسیریابی اشتراک JSON",
       "subJsonRoutingRulesDesc": "JSON قواعد مسیریابی، دیپ‌لینک happ:// یا incy://، یا آدرس https://. وقتی تنظیم شود، DNS و قواعد مسیریابی اشتراک JSON را جایگزین می‌کند (در پیکربندی برای کلاینت‌هایی که هدرها را نادیده می‌گیرند تعبیه می‌شود، مانند Happ و INCY با بالانسر سمت کلاینت). اگر تنظیم هدر Happ خالی باشد، همین پروفایل به‌صورت خودکار در هدر Routing ارسال می‌شود (JSON و آدرس‌ها به‌صورت دیپ‌لینک happ://) تا کلاینت‌ها فایل‌های geo منطبق را دانلود کنند.",
+      "subJsonDns": "سرورهای DNS",
+      "subJsonDnsDesc": "بلوک dns را که در کلاینت‌های اشتراک JSON جای می‌گیرد جایگزین می‌کند: یا یک شیء کامل dns یا فقط آرایهٔ servers. همچنین DNS پروفایل مسیریابی را در همان کلاینت‌ها جایگزین می‌کند؛ اما کلاینت‌هایی که هدر Routing را اعمال می‌کنند، ریزالورهای پروفایل را نگه می‌دارند. خالی یعنی ریزالور پیش‌فرض.",
       "subClashAutoDetect": "تشخیص خودکار کلاینت‌های Clash/Mihomo",
       "subClashAutoDetectDesc": "با فعال‌سازی، کلاینت‌های شناخته‌شده Clash/Mihomo که آدرس استاندارد اشتراک را درخواست می‌کنند، به‌طور خودکار پیکربندی Clash با فرمت YAML دریافت می‌کنند. مرورگرها همچنان صفحه اشتراک را نمایش می‌دهند، سایر کلاینت‌ها پاسخ خام/Base64 را دریافت می‌کنند و آدرس‌های صریح JSON و Clash در دسترس می‌مانند. برای اعمال تغییر، اشتراک Clash/Mihomo باید فعال باشد و پنل راه‌اندازی مجدد شود.",
       "subClashUserAgentRegex": "عبارت User-Agent برای Clash/Mihomo",
@@ -1290,6 +1299,8 @@
       "muxSett": "تنظیمات ماکس",
       "direct": "اتصال مستقیم",
       "directDesc": "به طور مستقیم با دامنه ها یا محدوده آی‌پی یک کشور خاص ارتباط برقرار می کند",
+      "block": "مسدود کردن اتصال",
+      "blockDesc": "اتصالات به دامنه‌ها یا محدوده‌های IP انتخاب‌شده را با outbound بلک‌هول مسدود می‌کند.",
       "notifications": "اعلان‌ها",
       "certs": "گواهی‌ها",
       "externalTraffic": "ترافیک خارجی",
@@ -1959,6 +1970,19 @@
         "listenPort": "Listen Port (optional)",
         "listenPortHint": "Fixed local UDP source port. Leave 0 to pick one automatically.",
         "outboundObfuscationHint": "Must exactly match the server side parameters."
+      },
+      "tuic": {
+        "congestionControl": "کنترل ازدحام",
+        "alpn": "ALPN",
+        "udpRelayMode": "حالت رله UDP",
+        "zeroRttHandshake": "دست دادن 0-RTT",
+        "logLevel": "سطح گزارش",
+        "logLevelHint": "وضعیت آنلاین، آخرین اتصال و «شروع پس از اولین استفاده» از خطوط Info سایدکار خوانده می‌شوند؛ Warn یا Error آن‌ها را برای این اینباند غیرفعال می‌کند.",
+        "maxIdleTime": "حداکثر زمان بیکاری (ثانیه)",
+        "authTimeout": "مهلت زمانی احراز هویت (ثانیه)",
+        "maxUdpRelayPacketSize": "حداکثر اندازه بسته UDP",
+        "sni": "SNI",
+        "sniHint": "بازنویسی نشانگر نام سرور"
       },
       "tun": {
         "userLevel": "سطح کاربر"

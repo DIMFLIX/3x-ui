@@ -628,6 +628,8 @@
         "scanCert": "Sertifika",
         "scanCertInvalid": "Güvenilmez",
         "scanCertExpiry": "Sertifika bitiş tarihi",
+        "scanCertChain": "Sertifika zinciri",
+        "scanMldsaCertChainTooSmall": "Hedef sertifika zinciri {length} bayt; ML-DSA-65 için gereken {min} bayt minimumunun altında. Bu, bağlantıların sessizce başarısız olmasına yol açar. Farklı bir hedef seçin veya ML-DSA-65'i kapatın.",
         "scanSniUsed": "Kullanılan SNI",
         "scanPrivateNote": "Özel/yerel ağ üzerinden kontrol edildi — bu adrese internetten erişilemez.",
         "scanPrivateConfirmTitle": "Hedef yerel ağda",
@@ -675,7 +677,8 @@
         "bytesPerSec": "Saniye Başına Bayt",
         "bytesPerSecTip": "Eşik aşıldıktan sonra fallback trafiğine uygulanan hız sınırı (bayt/sn); böylece sondalar sunucunuzu hedefe ücretsiz bant genişliği olarak kullanamaz. 0 = sınır yok (bu yönü devre dışı bırakır).",
         "burstBytesPerSec": "Saniye Başına Patlama Baytı",
-        "burstBytesPerSecTip": "Sabit hızın üzerindeki kısa patlamalar için pay (token-bucket boyutu). Saniye Başına Bayt değerinden düşükse ona eşitlenecek şekilde yükseltilir."
+        "burstBytesPerSecTip": "Sabit hızın üzerindeki kısa patlamalar için pay (token-bucket boyutu). Saniye Başına Bayt değerinden düşükse ona eşitlenecek şekilde yükseltilir.",
+        "autoFill": "Otomatik Doldur"
       },
       "info": {
         "mode": "Mod",
@@ -694,7 +697,8 @@
         "peerNumber": "Eş {n}",
         "peerNumberConfig": "Peer {n} Yapılandırması"
       },
-      "sniffingDestOverride": "Hedef geçersiz kılma"
+      "sniffingDestOverride": "Hedef geçersiz kılma",
+      "advancedTitle": "Gelişmiş Ayarlar"
     },
     "clients": {
       "tabBasics": "Temel",
@@ -760,6 +764,7 @@
       "noHwids": "Henüz HWID cihazı yok",
       "firstSeen": "İlk görülme",
       "lastSeen": "Son görülme",
+      "hwidFingerprint": "HWID parmak izi",
       "deleteHwid": "Cihazı kaldır",
       "deleteHwidConfirm": "Bu cihaz kaldırılsın mı? Bir sonraki abonelik alımında yeniden kaydolması gerekecek.",
       "hwidDeleted": "Cihaz kaldırıldı.",
@@ -882,6 +887,7 @@
       "tunnelKeepAlive": "Keepalive (seconds)",
       "tunnelKeepAliveHint": "How often the client sends a keepalive packet. 25 is the usual value: it holds the NAT mapping open and brings an idle peer back on its own after any drop, including a panel restart. 0 disables it — an idle client then stays disconnected until it sends traffic.",
       "amneziaWgConfig": "AmneziaWG Yapılandırması",
+      "tuicConfig": "TUIC Yapılandırması (Clash)",
       "mtprotoSecret": "MTProto sırrı",
       "mtprotoSecretHint": "İstemcinin FakeTLS sırrı. Değiştirmek için yeniden oluşturun.",
       "mtprotoAdTag": "Reklam etiketi (sponsorlu kanal)",
@@ -915,6 +921,7 @@
       "renewOnDay": "Yenileme günü",
       "renewOnDayDesc": "Her N günde bir yerine, her takvim ayının bu gününde, panel saat diliminde gece yarısı yeniler. Seçilen gün için kısa olan aylarda ayın son gününde yeniler. 0 gün aralığı modunu korur.",
       "renewsUsed": "Kullanılan yenileme",
+      "tuicTotalGBDesc": "TUIC does not support per-client traffic limits; set traffic limit on the inbound instead.",
       "bulkAdTagHint": "Aramak için 32 karakterlik onaltılık etiket girin veya MTProto üzerinde temizlemek için 'none' yazın."
     },
     "groups": {
@@ -1171,6 +1178,8 @@
       "subJsonUserAgentRegexDesc": "Standart abonelik URL'sinde Xray JSON biçimini otomatik seçmek için istemcinin User-Agent değeriyle eşleştirilen Go RE2 düzenli ifadesi. Varsayılan olarak boştur; bu nedenle hizmet vermek istediğiniz istemciler için bir desen belirleyene kadar otomatik algılama kapalı kalır. Diğer istemciler ham/Base64 yanıtını almaya devam eder. Değişiklikten sonra paneli yeniden başlatın.",
       "subJsonRoutingRules": "JSON aboneliği yönlendirme profili",
       "subJsonRoutingRulesDesc": "Yönlendirme JSON'u, happ:// veya incy:// deeplink'i ya da https:// URL'si. Ayarlandığında JSON aboneliğinin DNS ve yönlendirme kurallarını değiştirir (başlıkları yok sayan istemciler için yapılandırmaya gömülür, örn. istemci tarafı dengeleyicileri olan Happ ve INCY). Happ yönlendirme başlığı ayarı boşsa, aynı profil otomatik olarak Routing başlığı olarak gönderilir (JSON ve URL'ler happ:// deeplink'i olarak) ve istemciler eşleşen geo dosyalarını indirir.",
+      "subJsonDns": "DNS sunucuları",
+      "subJsonDnsDesc": "JSON abonelik yapılandırmalarındaki dns bloğunu değiştirir: tam bir dns nesnesi veya yalnızca servers dizisi. Bu yapılandırmalarda yönlendirme profilinin DNS'ini de değiştirir; Routing başlığını uygulayan istemciler ise profilin çözümleyicilerini kullanır. Boş bırakılırsa yerleşik çözümleyici kullanılır.",
       "subClashAutoDetect": "Clash/Mihomo istemcilerini otomatik algıla",
       "subClashAutoDetectDesc": "Etkinleştirildiğinde, standart abonelik URL'sini isteyen tanınmış Clash/Mihomo istemcileri otomatik olarak Clash YAML alır. Tarayıcılar abonelik sayfasını göstermeye devam eder, diğer istemciler ham/Base64 yanıtını almaya devam eder ve açık JSON ile Clash URL'leri kullanılabilir kalır. Uygulanması için Clash/Mihomo aboneliğinin etkinleştirilmesi ve panelin yeniden başlatılması gerekir.",
       "subClashUserAgentRegex": "Clash/Mihomo User-Agent düzenli ifadesi",
@@ -1286,6 +1295,8 @@
       "muxSett": "Mux Ayarları",
       "direct": "Doğrudan Bağlantı",
       "directDesc": "Belirli bir ülkenin alan adları veya IP aralıkları ile doğrudan bağlantı kurar.",
+      "block": "Bağlantıyı Engelle",
+      "blockDesc": "Seçilen alan adlarına veya IP aralıklarına giden bağlantıları blackhole outbound ile engeller.",
       "notifications": "Bildirimler",
       "certs": "Sertifikalar",
       "externalTraffic": "Harici Trafik",
@@ -1959,6 +1970,19 @@
         "listenPort": "Listen Port (optional)",
         "listenPortHint": "Fixed local UDP source port. Leave 0 to pick one automatically.",
         "outboundObfuscationHint": "Must exactly match the server side parameters."
+      },
+      "tuic": {
+        "congestionControl": "Tıkanıklık Kontrolü",
+        "alpn": "ALPN",
+        "udpRelayMode": "UDP İletim Modu",
+        "zeroRttHandshake": "0-RTT El Sıkışması",
+        "logLevel": "Günlük Seviyesi",
+        "logLevelHint": "Çevrimiçi durumu, son görülme ve \"ilk kullanımdan sonra başlat\" sidecar'ın Info satırlarından okunur; Warn veya Error bunları bu inbound için kapatır.",
+        "maxIdleTime": "Maksimum Boşta Kalma Süresi (sn)",
+        "authTimeout": "Kimlik Doğrulama Zaman Aşımı (sn)",
+        "maxUdpRelayPacketSize": "Maksimum UDP Paket Boyutu",
+        "sni": "SNI",
+        "sniHint": "Sunucu Adı Belirtimi (SNI) geçersiz kılma"
       },
       "tun": {
         "userLevel": "Kullanıcı Seviyesi"

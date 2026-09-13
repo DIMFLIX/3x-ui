@@ -282,6 +282,9 @@ export const SCHEMAS: Record<string, unknown> = {
       "subJsonAutoDetect": {
         "type": "boolean"
       },
+      "subJsonDns": {
+        "type": "string"
+      },
       "subJsonEnable": {
         "type": "boolean"
       },
@@ -519,6 +522,7 @@ export const SCHEMAS: Record<string, unknown> = {
       "subInfoNodeEnable",
       "subJsonAlwaysArray",
       "subJsonAutoDetect",
+      "subJsonDns",
       "subJsonEnable",
       "subJsonFinalMask",
       "subJsonMux",
@@ -870,6 +874,9 @@ export const SCHEMAS: Record<string, unknown> = {
       "subJsonAutoDetect": {
         "type": "boolean"
       },
+      "subJsonDns": {
+        "type": "string"
+      },
       "subJsonEnable": {
         "type": "boolean"
       },
@@ -1114,6 +1121,7 @@ export const SCHEMAS: Record<string, unknown> = {
       "subInfoNodeEnable",
       "subJsonAlwaysArray",
       "subJsonAutoDetect",
+      "subJsonDns",
       "subJsonEnable",
       "subJsonFinalMask",
       "subJsonMux",
@@ -2578,7 +2586,8 @@ export const SCHEMAS: Record<string, unknown> = {
           "tunnel",
           "tun",
           "mtproto",
-          "amneziawg"
+          "amneziawg",
+          "tuic"
         ],
         "example": "vless",
         "type": "string"
@@ -2603,9 +2612,8 @@ export const SCHEMAS: Record<string, unknown> = {
       "sniffing": {},
       "streamSettings": {},
       "subSortIndex": {
-        "description": "1-based sort order of this inbound's links in subscription output only (lower first; ties by id)",
+        "description": "Sort order of this inbound's links in subscription output only (lower first; negatives allowed; 0/omitted → 1; ties by id)",
         "example": 1,
-        "minimum": 1,
         "type": "integer"
       },
       "tag": {
@@ -2796,6 +2804,14 @@ export const SCHEMAS: Record<string, unknown> = {
       "tlsFlowCapable": {
         "example": true,
         "type": "boolean"
+      },
+      "tuicServer": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/TuicServerSettings"
+          }
+        ],
+        "nullable": true
       },
       "wgDns": {
         "type": "string"
@@ -3675,6 +3691,11 @@ export const SCHEMAS: Record<string, unknown> = {
         "example": "h2",
         "type": "string"
       },
+      "certChainBytes": {
+        "description": "CertChainBytes is the sum of DER lengths of the presented peer chain.\nxray-core ML-DSA-65 REALITY needs \u003e= 3500 bytes (constant lives in xray-core).",
+        "example": 3427,
+        "type": "integer"
+      },
       "certChainValid": {
         "description": "CertChainValid ignores the name: a trusted chain presented for other names\nstill has serverNames the panel can offer instead of the failing SNI.",
         "example": true,
@@ -3757,6 +3778,7 @@ export const SCHEMAS: Record<string, unknown> = {
     },
     "required": [
       "alpn",
+      "certChainBytes",
       "certChainValid",
       "certIssuer",
       "certSubject",
@@ -4047,6 +4069,78 @@ export const SCHEMAS: Record<string, unknown> = {
       "IsOutbound",
       "Tag",
       "Up"
+    ],
+    "type": "object"
+  },
+  "TuicClientSettings": {
+    "properties": {
+      "email": {
+        "type": "string"
+      },
+      "password": {
+        "type": "string"
+      },
+      "uuid": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "email",
+      "password",
+      "uuid"
+    ],
+    "type": "object"
+  },
+  "TuicServerSettings": {
+    "properties": {
+      "alpn": {
+        "items": {
+          "type": "string"
+        },
+        "type": "array"
+      },
+      "authentication_timeout": {
+        "type": "integer"
+      },
+      "certificate": {
+        "type": "string"
+      },
+      "congestion_control": {
+        "type": "string"
+      },
+      "log_level": {
+        "type": "string"
+      },
+      "max_idle_time": {
+        "type": "integer"
+      },
+      "max_udp_relay_packet_size": {
+        "type": "integer"
+      },
+      "private_key": {
+        "type": "string"
+      },
+      "sni": {
+        "type": "string"
+      },
+      "udp_relay_mode": {
+        "type": "string"
+      },
+      "zero_rtt_handshake": {
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "alpn",
+      "authentication_timeout",
+      "certificate",
+      "congestion_control",
+      "log_level",
+      "max_idle_time",
+      "max_udp_relay_packet_size",
+      "private_key",
+      "udp_relay_mode",
+      "zero_rtt_handshake"
     ],
     "type": "object"
   },

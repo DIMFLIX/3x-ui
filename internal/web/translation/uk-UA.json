@@ -628,6 +628,8 @@
         "scanCert": "Сертифікат",
         "scanCertInvalid": "Ненадійний",
         "scanCertExpiry": "Сертифікат діє до",
+        "scanCertChain": "Ланцюжок сертифікатів",
+        "scanMldsaCertChainTooSmall": "Ланцюжок сертифікатів цілі має {length} байт, що менше мінімуму {min} байт для ML-DSA-65. З’єднання мовчки потраплятимуть у fallback. Оберіть іншу ціль або вимкніть ML-DSA-65.",
         "scanSniUsed": "Використаний SNI",
         "scanPrivateNote": "Перевірено у внутрішній (локальній) мережі — ця адреса недоступна з інтернету.",
         "scanPrivateConfirmTitle": "Ціль у локальній мережі",
@@ -675,7 +677,8 @@
           "node": "Адреса вузла",
           "listen": "Адреса прослуховування inbound",
           "custom": "Користувацька"
-        }
+        },
+        "autoFill": "Автозаповнення"
       },
       "info": {
         "mode": "Режим",
@@ -694,7 +697,8 @@
         "peerNumber": "Peer {n}",
         "peerNumberConfig": "Конфіг Peer {n}"
       },
-      "sniffingDestOverride": "Перевизначення призначення"
+      "sniffingDestOverride": "Перевизначення призначення",
+      "advancedTitle": "Додаткові налаштування"
     },
     "clients": {
       "tabBasics": "Основні",
@@ -760,6 +764,7 @@
       "noHwids": "Пристроїв HWID ще немає",
       "firstSeen": "Перша поява",
       "lastSeen": "Остання поява",
+      "hwidFingerprint": "Відбиток HWID",
       "deleteHwid": "Видалити пристрій",
       "deleteHwidConfirm": "Видалити цей пристрій? Йому потрібно буде зареєструватися знову під час наступного отримання підписки.",
       "hwidDeleted": "Пристрій видалено.",
@@ -882,6 +887,7 @@
       "tunnelKeepAlive": "Keepalive (seconds)",
       "tunnelKeepAliveHint": "How often the client sends a keepalive packet. 25 is the usual value: it holds the NAT mapping open and brings an idle peer back on its own after any drop, including a panel restart. 0 disables it — an idle client then stays disconnected until it sends traffic.",
       "amneziaWgConfig": "Конфігурація AmneziaWG",
+      "tuicConfig": "Конфігурація TUIC (Clash)",
       "mtprotoSecret": "Секрет MTProto",
       "mtprotoSecretHint": "Секрет FakeTLS клієнта. Згенеруйте заново, щоб змінити.",
       "mtprotoAdTag": "Рекламний тег (спонсорський канал)",
@@ -915,6 +921,7 @@
       "renewOnDay": "Подовжувати числа",
       "renewOnDayDesc": "Подовжувати цього числа кожного місяця, опівночі за часовим поясом панелі, замість інтервалу в днях. Якщо в місяці такого числа немає, подовження припаде на останній день. 0 — залишити режим інтервалу.",
       "renewsUsed": "Подовжень витрачено",
+      "tuicTotalGBDesc": "TUIC does not support per-client traffic limits; set traffic limit on the inbound instead.",
       "bulkAdTagHint": "Введіть 32-значний hex-тег для встановлення або 'none' для очищення спонсорського каналу на MTProto."
     },
     "groups": {
@@ -1171,6 +1178,8 @@
       "subJsonUserAgentRegexDesc": "Регулярний вираз Go RE2, який зіставляється з User-Agent клієнта для автоматичного вибору формату Xray JSON на стандартній URL-адресі підписки. Типово порожнє, тому автоматичне визначення вимкнено, доки ви не задасте шаблон для потрібних клієнтів. Інші клієнти отримують відповідь raw/Base64. Після зміни перезапустіть панель.",
       "subJsonRoutingRules": "Профіль маршрутизації для JSON-підписки",
       "subJsonRoutingRulesDesc": "JSON правил маршрутизації, діплінк happ:// або incy://, або https:// URL. Якщо задано, замінює DNS і правила маршрутизації JSON-підписки (вбудовуються в конфігурацію для клієнтів, що ігнорують заголовки, напр. Happ і INCY з клієнтськими балансувальниками). Якщо налаштування заголовка Happ порожнє, цей самий профіль автоматично надсилається в заголовку Routing (JSON і URL — у вигляді діплінка happ://), щоб клієнти завантажували відповідні geo-файли.",
+      "subJsonDns": "DNS-сервери",
+      "subJsonDnsDesc": "Замінює блок dns, що вбудовується в конфіги JSON-підписки: повний об'єкт dns або просто масив servers. Також замінює DNS профілю маршрутизації в цих конфігах; клієнти, які застосовують заголовок Routing, використовують резолвери з профілю. Порожнє — вбудований резолвер.",
       "subClashAutoDetect": "Автоматично визначати клієнтів Clash/Mihomo",
       "subClashAutoDetectDesc": "Якщо параметр увімкнено, розпізнані клієнти Clash/Mihomo під час запиту стандартної URL-адреси підписки автоматично отримують Clash YAML. Браузери й надалі показують сторінку підписки, інші клієнти отримують звичайну відповідь raw/Base64, а явні URL-адреси JSON і Clash залишаються доступними. Для застосування потрібно ввімкнути підписку Clash/Mihomo та перезапустити панель.",
       "subClashUserAgentRegex": "Регулярний вираз User-Agent Clash/Mihomo",
@@ -1286,6 +1295,8 @@
       "muxSett": "Налаштування Mux",
       "direct": "Пряме підключення",
       "directDesc": "Безпосередньо встановлює з’єднання з доменами або діапазонами IP певної країни.",
+      "block": "Блокування з’єднань",
+      "blockDesc": "Блокує з’єднання з вибраними доменами або діапазонами IP через outbound blackhole.",
       "notifications": "Сповіщення",
       "certs": "Сертифікати",
       "externalTraffic": "Зовнішній трафік",
@@ -1959,6 +1970,19 @@
         "listenPort": "Listen Port (optional)",
         "listenPortHint": "Fixed local UDP source port. Leave 0 to pick one automatically.",
         "outboundObfuscationHint": "Must exactly match the server side parameters."
+      },
+      "tuic": {
+        "congestionControl": "Контроль перевантаження",
+        "alpn": "ALPN",
+        "udpRelayMode": "Режим ретрансляції UDP",
+        "zeroRttHandshake": "0-RTT рукостискання",
+        "logLevel": "Рівень журналювання",
+        "logLevelHint": "Статус онлайн, «востаннє онлайн» і «старт після першого використання» читаються з рядків Info сайдкара; Warn або Error вимикають їх для цього інбаунда.",
+        "maxIdleTime": "Макс. час простою (сек)",
+        "authTimeout": "Таймаут автентифікації (сек)",
+        "maxUdpRelayPacketSize": "Макс. розмір пакета UDP",
+        "sni": "SNI",
+        "sniHint": "Перевизначення Server Name Indication"
       },
       "tun": {
         "userLevel": "Рівень користувача"

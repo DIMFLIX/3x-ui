@@ -96,6 +96,7 @@ export interface AllSetting {
   subInfoNodeEnable: boolean;
   subJsonAlwaysArray: boolean;
   subJsonAutoDetect: boolean;
+  subJsonDns: string;
   subJsonEnable: boolean;
   subJsonFinalMask: string;
   subJsonMux: string;
@@ -238,6 +239,7 @@ export interface AllSettingView {
   subInfoNodeEnable: boolean;
   subJsonAlwaysArray: boolean;
   subJsonAutoDetect: boolean;
+  subJsonDns: string;
   subJsonEnable: boolean;
   subJsonFinalMask: string;
   subJsonMux: string;
@@ -642,6 +644,7 @@ export interface InboundOption {
   ssMethod: string;
   tag: string;
   tlsFlowCapable: boolean;
+  tuicServer?: TuicServerSettings | null;
   wgDns?: string;
   wgMtu?: number;
   wgPublicKey?: string;
@@ -834,6 +837,7 @@ export interface ProbeResultUI {
 
 export interface RealityScanResult {
   alpn: string;
+  certChainBytes: number;
   certChainValid: boolean;
   certIssuer: string;
   certSubject: string;
@@ -919,6 +923,26 @@ export interface Traffic {
   IsOutbound: boolean;
   Tag: string;
   Up: number;
+}
+
+export interface TuicClientSettings {
+  email: string;
+  password: string;
+  uuid: string;
+}
+
+export interface TuicServerSettings {
+  alpn: string[];
+  authentication_timeout: number;
+  certificate: string;
+  congestion_control: string;
+  log_level: string;
+  max_idle_time: number;
+  max_udp_relay_packet_size: number;
+  private_key: string;
+  sni?: string;
+  udp_relay_mode: string;
+  zero_rtt_handshake: boolean;
 }
 
 export interface User {

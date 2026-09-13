@@ -628,6 +628,8 @@
         "scanCert": "الشهادة",
         "scanCertInvalid": "غير موثوق",
         "scanCertExpiry": "انتهاء صلاحية الشهادة",
+        "scanCertChain": "سلسلة الشهادات",
+        "scanMldsaCertChainTooSmall": "سلسلة شهادات الهدف {length} بايت، وهي أقل من الحد الأدنى {min} بايت المطلوب لـ ML-DSA-65. سيؤدي ذلك إلى فشل الاتصال بصمت. يُرجى اختيار هدف مختلف أو تعطيل ML-DSA-65.",
         "scanSniUsed": "SNI المستخدم",
         "scanPrivateNote": "تم الفحص عبر شبكة خاصة/محلية — هذا العنوان غير قابل للوصول من الإنترنت.",
         "scanPrivateConfirmTitle": "الهدف في شبكة محلية",
@@ -675,7 +677,8 @@
         "bytesPerSec": "بايت في الثانية",
         "bytesPerSecTip": "حد السرعة (بايت/ثانية) المطبّق على مرور الـ fallback بعد العتبة، عشان الفحوصات ماتقدرش تستخدم سيرفرك كنطاق ترددي مجاني للهدف. 0 = بلا حد (بيعطّل الاتجاه ده).",
         "burstBytesPerSec": "بايت في الثانية للدفقة",
-        "burstBytesPerSecTip": "السماح بدفقات قصيرة فوق المعدل الثابت (حجم token-bucket). لو أقل من بايت في الثانية بيترفع ليطابقه."
+        "burstBytesPerSecTip": "السماح بدفقات قصيرة فوق المعدل الثابت (حجم token-bucket). لو أقل من بايت في الثانية بيترفع ليطابقه.",
+        "autoFill": "الملء التلقائي"
       },
       "info": {
         "mode": "الوضع",
@@ -694,7 +697,8 @@
         "peerNumber": "Peer {n}",
         "peerNumberConfig": "تكوين Peer {n}"
       },
-      "sniffingDestOverride": "تجاوز الوجهة"
+      "sniffingDestOverride": "تجاوز الوجهة",
+      "advancedTitle": "الإعدادات المتقدمة"
     },
     "clients": {
       "tabBasics": "أساسي",
@@ -760,6 +764,7 @@
       "noHwids": "لا توجد أجهزة HWID بعد",
       "firstSeen": "أول ظهور",
       "lastSeen": "آخر ظهور",
+      "hwidFingerprint": "بصمة HWID",
       "deleteHwid": "إزالة الجهاز",
       "deleteHwidConfirm": "إزالة هذا الجهاز؟ سيحتاج إلى إعادة التسجيل عند جلب الاشتراك التالي.",
       "hwidDeleted": "تمت إزالة الجهاز.",
@@ -882,6 +887,7 @@
       "tunnelKeepAlive": "Keepalive (seconds)",
       "tunnelKeepAliveHint": "How often the client sends a keepalive packet. 25 is the usual value: it holds the NAT mapping open and brings an idle peer back on its own after any drop, including a panel restart. 0 disables it — an idle client then stays disconnected until it sends traffic.",
       "amneziaWgConfig": "إعدادات AmneziaWG",
+      "tuicConfig": "إعدادات TUIC (Clash)",
       "mtprotoSecret": "سر MTProto",
       "mtprotoSecretHint": "سر FakeTLS الخاص بالعميل. أعد التوليد لتغييره.",
       "mtprotoAdTag": "علامة إعلانية (قناة مموّلة)",
@@ -915,6 +921,7 @@
       "renewOnDay": "يوم التجديد",
       "renewOnDayDesc": "يتم التجديد في هذا اليوم من كل شهر ميلادي، عند منتصف الليل بتوقيت اللوحة، بدلاً من كل N يوم. إذا كان الشهر أقصر من اليوم المختار، يتم التجديد في آخر يوم منه. القيمة 0 تُبقي وضع الفاصل اليومي.",
       "renewsUsed": "التجديدات المستخدمة",
+      "tuicTotalGBDesc": "TUIC does not support per-client traffic limits; set traffic limit on the inbound instead.",
       "bulkAdTagHint": "أدخل علامة من 32 حرفًا ست عشريًا للتعيين، أو 'none' للمسح في منافذ MTProto."
     },
     "groups": {
@@ -1171,6 +1178,8 @@
       "subJsonUserAgentRegexDesc": "تعبير Go RE2 منتظم يُطابَق مع وكيل المستخدم (User-Agent) لاختيار صيغة Xray JSON تلقائيًا على رابط الاشتراك القياسي. فارغ افتراضيًا، لذا يبقى الاكتشاف التلقائي معطلاً حتى تحدد نمطًا للعملاء الذين تريد خدمتهم. يحصل العملاء الآخرون على الاستجابة الخام/Base64. أعد تشغيل اللوحة بعد التغيير.",
       "subJsonRoutingRules": "ملف توجيه اشتراك JSON",
       "subJsonRoutingRulesDesc": "JSON لقواعد التوجيه، أو رابط happ:// أو incy://، أو رابط https://. عند تعيينه، يستبدل DNS وقواعد التوجيه لاشتراك JSON (تُدمج في الإعداد للعملاء الذين يتجاهلون الترويسات، مثل Happ وINCY مع الموازنات من جانب العميل). إذا كان إعداد ترويسة Happ فارغًا، يُرسَل نفس الملف تلقائيًا كترويسة Routing (يُحوَّل JSON والروابط إلى ديب‌لينك happ://) ليحمّل العملاء ملفات geo المطابقة.",
+      "subJsonDns": "خوادم DNS",
+      "subJsonDnsDesc": "يستبدل كتلة dns في جميع إعدادات اشتراك JSON: إما كائن dns كامل أو مصفوفة servers فقط. يستبدل أيضًا DNS ملف التوجيه داخل هذه الإعدادات؛ أما العملاء الذين يطبّقون ترويسة Routing فيُبقون على مُحلِّلات الملف. تركه فارغًا يُبقي المُحلِّل المدمج.",
       "subClashAutoDetect": "اكتشاف عملاء Clash/Mihomo تلقائيًا",
       "subClashAutoDetectDesc": "عند التفعيل، يتلقى عملاء Clash/Mihomo المعروفون الذين يطلبون رابط الاشتراك القياسي إعداد Clash بصيغة YAML تلقائيًا. تستمر المتصفحات في عرض صفحة الاشتراك، ويحصل العملاء الآخرون على الاستجابة الخام/Base64، وتبقى روابط JSON وClash الصريحة متاحة. يتطلب تفعيل اشتراك Clash/Mihomo وإعادة تشغيل اللوحة لتطبيق التغيير.",
       "subClashUserAgentRegex": "تعبير User-Agent لعملاء Clash/Mihomo",
@@ -1286,6 +1295,8 @@
       "muxSett": "إعدادات MUX",
       "direct": "اتصال مباشر",
       "directDesc": "ينشئ اتصال مباشر مع الدومينات أو نطاقات IP لدولة معينة.",
+      "block": "حظر الاتصال",
+      "blockDesc": "يحظر الاتصالات بالنطاقات أو نطاقات IP المحددة باستخدام مسار blackhole.",
       "notifications": "الإشعارات",
       "certs": "الشهادات",
       "externalTraffic": "الترافيك الخارجي",
@@ -1959,6 +1970,19 @@
         "listenPort": "Listen Port (optional)",
         "listenPortHint": "Fixed local UDP source port. Leave 0 to pick one automatically.",
         "outboundObfuscationHint": "Must exactly match the server side parameters."
+      },
+      "tuic": {
+        "congestionControl": "التحكم في الازدحام",
+        "alpn": "ALPN",
+        "udpRelayMode": "وضع ترحيل UDP",
+        "zeroRttHandshake": "مصافحة 0-RTT",
+        "logLevel": "مستوى السجل",
+        "logLevelHint": "يتم استنتاج حالة الاتصال وآخر ظهور و«البدء بعد أول استخدام» من سطور Info الخاصة بالعملية الجانبية؛ اختيار Warn أو Error يعطّلها لهذا الإنباوند.",
+        "maxIdleTime": "أقصى وقت خمول (ثوانٍ)",
+        "authTimeout": "مهلة المصادقة (ثوانٍ)",
+        "maxUdpRelayPacketSize": "أقصى حجم لحزمة UDP",
+        "sni": "SNI",
+        "sniHint": "تجاوز إشارة اسم الخادم"
       },
       "tun": {
         "userLevel": "مستوى المستخدم"

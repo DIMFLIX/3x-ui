@@ -649,6 +649,8 @@
         "scanCert": "Certificado",
         "scanCertInvalid": "No confiable",
         "scanCertExpiry": "El certificado caduca",
+        "scanCertChain": "Cadena de certificados",
+        "scanMldsaCertChainTooSmall": "La cadena de certificados del destino mide {length} bytes, por debajo del mínimo de {min} bytes que requiere ML-DSA-65. Las conexiones fallarán en silencio. Elige otro destino o desactiva ML-DSA-65.",
         "scanSniUsed": "SNI utilizado",
         "scanPrivateNote": "Comprobado en una red privada/local: esta dirección no es accesible desde internet.",
         "scanPrivateConfirmTitle": "Destino en una red local",
@@ -675,7 +677,8 @@
           "node": "Dirección del nodo",
           "listen": "Dirección de escucha del inbound",
           "custom": "Personalizada"
-        }
+        },
+        "autoFill": "Autocompletar"
       },
       "info": {
         "mode": "Modo",
@@ -694,7 +697,8 @@
         "peerNumber": "Peer {n}",
         "peerNumberConfig": "Config Peer {n}"
       },
-      "sniffingDestOverride": "Anulación de destino"
+      "sniffingDestOverride": "Anulación de destino",
+      "advancedTitle": "Configuración avanzada"
     },
     "clients": {
       "tabBasics": "Básico",
@@ -760,6 +764,7 @@
       "noHwids": "Aún no hay dispositivos HWID",
       "firstSeen": "Visto por primera vez",
       "lastSeen": "Visto por última vez",
+      "hwidFingerprint": "Huella HWID",
       "deleteHwid": "Eliminar dispositivo",
       "deleteHwidConfirm": "¿Eliminar este dispositivo? Deberá volver a registrarse en la próxima obtención de la suscripción.",
       "hwidDeleted": "Dispositivo eliminado.",
@@ -882,6 +887,7 @@
       "tunnelKeepAlive": "Keepalive (seconds)",
       "tunnelKeepAliveHint": "How often the client sends a keepalive packet. 25 is the usual value: it holds the NAT mapping open and brings an idle peer back on its own after any drop, including a panel restart. 0 disables it — an idle client then stays disconnected until it sends traffic.",
       "amneziaWgConfig": "Configuración de AmneziaWG",
+      "tuicConfig": "Configuración de TUIC (Clash)",
       "mtprotoSecret": "Secreto MTProto",
       "mtprotoSecretHint": "El secreto FakeTLS del cliente. Vuelve a generarlo para cambiarlo.",
       "mtprotoAdTag": "Ad-tag (canal patrocinado)",
@@ -915,6 +921,7 @@
       "renewOnDay": "Renovar el día",
       "renewOnDayDesc": "Renueva este día de cada mes natural, a medianoche en la zona horaria del panel, en lugar de cada N días. Si el mes es demasiado corto para el día elegido, renueva su último día. 0 mantiene el modo de intervalo en días.",
       "renewsUsed": "Renovaciones usadas",
+      "tuicTotalGBDesc": "TUIC does not support per-client traffic limits; set traffic limit on the inbound instead.",
       "bulkAdTagHint": "Introduce una etiqueta hexadecimal de 32 caracteres para asignar, o 'none' para borrarla en MTProto."
     },
     "groups": {
@@ -1171,6 +1178,8 @@
       "subJsonUserAgentRegexDesc": "Expresión regular Go RE2 que se compara con el User-Agent del cliente para seleccionar automáticamente el formato Xray JSON en la URL de suscripción estándar. Vacía de forma predeterminada, por lo que la detección automática permanece desactivada hasta que definas un patrón para los clientes que quieras atender. Los demás clientes conservan la respuesta sin procesar/Base64. Reinicia el panel después de cambiarla.",
       "subJsonRoutingRules": "Perfil de enrutamiento para la suscripción JSON",
       "subJsonRoutingRulesDesc": "JSON de enrutamiento, deeplink happ:// o incy://, o URL https://. Si se establece, reemplaza el DNS y las reglas de enrutamiento de la suscripción JSON (integrados en la configuración para clientes que ignoran cabeceras, p. ej. Happ e INCY con balanceadores del lado cliente). Si el ajuste de cabecera de Happ está vacío, el mismo perfil se envía automáticamente como cabecera Routing (el JSON y las URL como deeplink happ://) para que los clientes descarguen los archivos geo coincidentes.",
+      "subJsonDns": "Servidores DNS",
+      "subJsonDnsDesc": "Reemplaza el bloque dns de todas las configuraciones de la suscripción JSON: un objeto dns completo o solo el array servers. También reemplaza el DNS del perfil de enrutamiento en esas configuraciones; los clientes que aplican la cabecera Routing conservan sus resolutores. Vacío mantiene el resolutor integrado.",
       "subClashAutoDetect": "Detectar automáticamente clientes Clash/Mihomo",
       "subClashAutoDetectDesc": "Al activarlo, los clientes Clash/Mihomo reconocidos que soliciten la URL de suscripción estándar recibirán automáticamente YAML de Clash. Los navegadores seguirán mostrando la página de suscripción, los demás clientes conservarán la respuesta sin procesar/Base64 y las URL explícitas de JSON y Clash seguirán disponibles. Requiere activar la suscripción Clash/Mihomo y reiniciar el panel para aplicar el cambio.",
       "subClashUserAgentRegex": "Expresión User-Agent de Clash/Mihomo",
@@ -1286,6 +1295,8 @@
       "muxSett": "Configuración Mux",
       "direct": "Conexión Directa",
       "directDesc": "Establece conexiones directas con dominios o rangos de IP de un país específico.",
+      "block": "Bloquear conexión",
+      "blockDesc": "Bloquea conexiones a dominios o rangos de IP seleccionados usando el outbound blackhole.",
       "notifications": "Notificaciones",
       "certs": "Certificados",
       "externalTraffic": "Tráfico Externo",
@@ -1959,6 +1970,19 @@
         "listenPort": "Listen Port (optional)",
         "listenPortHint": "Fixed local UDP source port. Leave 0 to pick one automatically.",
         "outboundObfuscationHint": "Must exactly match the server side parameters."
+      },
+      "tuic": {
+        "congestionControl": "Control de congestión",
+        "alpn": "ALPN",
+        "udpRelayMode": "Modo de retransmisión UDP",
+        "zeroRttHandshake": "Apretón de manos 0-RTT",
+        "logLevel": "Nivel de registro",
+        "logLevelHint": "El estado en línea, la última conexión y «iniciar tras el primer uso» se leen de las líneas Info del sidecar; Warn o Error los desactivan para este inbound.",
+        "maxIdleTime": "Tiempo máx. de inactividad (s)",
+        "authTimeout": "Tiempo de espera de autenticación (s)",
+        "maxUdpRelayPacketSize": "Tamaño máx. de paquete UDP",
+        "sni": "SNI",
+        "sniHint": "Sobrescritura de Server Name Indication"
       },
       "tun": {
         "userLevel": "Nivel de Usuario"
